@@ -1,0 +1,18 @@
+type Level @model {
+  id: ID!
+  boss: String!
+  background: String!
+  questions: [Question!]! @connection(name: "LevelQuestions")
+}
+type Question @model {
+  id: ID!
+  text: String!
+  level: Level @connection(name: "LevelQuestions")
+  answers: [Answer!]! @connection(name: "QuestionAnswers")
+}
+type Answer @model {
+  id: ID!
+  text: String!
+  question: Question @connection(name: "QuestionAnswers")
+  correct: Boolean
+}
