@@ -1,7 +1,7 @@
 type Level @model {
   id: ID!
   boss: String!
-  bossImgUrl: String
+  bossImgUrl: AWSURL
   background: String
   questions: [Question] @connection(name: "LevelQuestions")
 }
