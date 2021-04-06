@@ -4,11 +4,13 @@
 export type CreateLevelInput = {
   id?: string | null,
   boss: string,
-  background: string,
+  bossImgUrl?: string | null,
+  background?: string | null,
 };
 
 export type ModelLevelConditionInput = {
   boss?: ModelStringInput | null,
+  bossImgUrl?: ModelStringInput | null,
   background?: ModelStringInput | null,
   and?: Array< ModelLevelConditionInput | null > | null,
   or?: Array< ModelLevelConditionInput | null > | null,
@@ -58,6 +60,7 @@ export type ModelSizeInput = {
 export type UpdateLevelInput = {
   id: string,
   boss?: string | null,
+  bossImgUrl?: string | null,
   background?: string | null,
 };
 
@@ -124,6 +127,7 @@ export type DeleteAnswerInput = {
 export type ModelLevelFilterInput = {
   id?: ModelIDInput | null,
   boss?: ModelStringInput | null,
+  bossImgUrl?: ModelStringInput | null,
   background?: ModelStringInput | null,
   and?: Array< ModelLevelFilterInput | null > | null,
   or?: Array< ModelLevelFilterInput | null > | null,
@@ -173,7 +177,8 @@ export type CreateLevelMutation = {
     __typename: "Level",
     id: string,
     boss: string,
-    background: string,
+    bossImgUrl: string | null,
+    background: string | null,
     questions:  {
       __typename: "ModelQuestionConnection",
       items:  Array< {
@@ -196,7 +201,8 @@ export type UpdateLevelMutation = {
     __typename: "Level",
     id: string,
     boss: string,
-    background: string,
+    bossImgUrl: string | null,
+    background: string | null,
     questions:  {
       __typename: "ModelQuestionConnection",
       items:  Array< {
@@ -219,7 +225,8 @@ export type DeleteLevelMutation = {
     __typename: "Level",
     id: string,
     boss: string,
-    background: string,
+    bossImgUrl: string | null,
+    background: string | null,
     questions:  {
       __typename: "ModelQuestionConnection",
       items:  Array< {
@@ -246,7 +253,8 @@ export type CreateQuestionMutation = {
       __typename: "Level",
       id: string,
       boss: string,
-      background: string,
+      bossImgUrl: string | null,
+      background: string | null,
       questions:  {
         __typename: "ModelQuestionConnection",
         nextToken: string | null,
@@ -279,7 +287,8 @@ export type UpdateQuestionMutation = {
       __typename: "Level",
       id: string,
       boss: string,
-      background: string,
+      bossImgUrl: string | null,
+      background: string | null,
       questions:  {
         __typename: "ModelQuestionConnection",
         nextToken: string | null,
@@ -312,7 +321,8 @@ export type DeleteQuestionMutation = {
       __typename: "Level",
       id: string,
       boss: string,
-      background: string,
+      bossImgUrl: string | null,
+      background: string | null,
       questions:  {
         __typename: "ModelQuestionConnection",
         nextToken: string | null,
@@ -349,7 +359,8 @@ export type CreateAnswerMutation = {
         __typename: "Level",
         id: string,
         boss: string,
-        background: string,
+        bossImgUrl: string | null,
+        background: string | null,
       } | null,
       answers:  {
         __typename: "ModelAnswerConnection",
@@ -378,7 +389,8 @@ export type UpdateAnswerMutation = {
         __typename: "Level",
         id: string,
         boss: string,
-        background: string,
+        bossImgUrl: string | null,
+        background: string | null,
       } | null,
       answers:  {
         __typename: "ModelAnswerConnection",
@@ -407,7 +419,8 @@ export type DeleteAnswerMutation = {
         __typename: "Level",
         id: string,
         boss: string,
-        background: string,
+        bossImgUrl: string | null,
+        background: string | null,
       } | null,
       answers:  {
         __typename: "ModelAnswerConnection",
@@ -427,7 +440,8 @@ export type GetLevelQuery = {
     __typename: "Level",
     id: string,
     boss: string,
-    background: string,
+    bossImgUrl: string | null,
+    background: string | null,
     questions:  {
       __typename: "ModelQuestionConnection",
       items:  Array< {
@@ -453,7 +467,8 @@ export type ListLevelsQuery = {
       __typename: "Level",
       id: string,
       boss: string,
-      background: string,
+      bossImgUrl: string | null,
+      background: string | null,
       questions:  {
         __typename: "ModelQuestionConnection",
         nextToken: string | null,
@@ -476,7 +491,8 @@ export type GetQuestionQuery = {
       __typename: "Level",
       id: string,
       boss: string,
-      background: string,
+      bossImgUrl: string | null,
+      background: string | null,
       questions:  {
         __typename: "ModelQuestionConnection",
         nextToken: string | null,
@@ -512,7 +528,8 @@ export type ListQuestionsQuery = {
         __typename: "Level",
         id: string,
         boss: string,
-        background: string,
+        bossImgUrl: string | null,
+        background: string | null,
       } | null,
       answers:  {
         __typename: "ModelAnswerConnection",
@@ -540,7 +557,8 @@ export type GetAnswerQuery = {
         __typename: "Level",
         id: string,
         boss: string,
-        background: string,
+        bossImgUrl: string | null,
+        background: string | null,
       } | null,
       answers:  {
         __typename: "ModelAnswerConnection",
@@ -580,7 +598,8 @@ export type OnCreateLevelSubscription = {
     __typename: "Level",
     id: string,
     boss: string,
-    background: string,
+    bossImgUrl: string | null,
+    background: string | null,
     questions:  {
       __typename: "ModelQuestionConnection",
       items:  Array< {
@@ -598,7 +617,8 @@ export type OnUpdateLevelSubscription = {
     __typename: "Level",
     id: string,
     boss: string,
-    background: string,
+    bossImgUrl: string | null,
+    background: string | null,
     questions:  {
       __typename: "ModelQuestionConnection",
       items:  Array< {
@@ -616,7 +636,8 @@ export type OnDeleteLevelSubscription = {
     __typename: "Level",
     id: string,
     boss: string,
-    background: string,
+    bossImgUrl: string | null,
+    background: string | null,
     questions:  {
       __typename: "ModelQuestionConnection",
       items:  Array< {
@@ -638,7 +659,8 @@ export type OnCreateQuestionSubscription = {
       __typename: "Level",
       id: string,
       boss: string,
-      background: string,
+      bossImgUrl: string | null,
+      background: string | null,
       questions:  {
         __typename: "ModelQuestionConnection",
         nextToken: string | null,
@@ -666,7 +688,8 @@ export type OnUpdateQuestionSubscription = {
       __typename: "Level",
       id: string,
       boss: string,
-      background: string,
+      bossImgUrl: string | null,
+      background: string | null,
       questions:  {
         __typename: "ModelQuestionConnection",
         nextToken: string | null,
@@ -694,7 +717,8 @@ export type OnDeleteQuestionSubscription = {
       __typename: "Level",
       id: string,
       boss: string,
-      background: string,
+      bossImgUrl: string | null,
+      background: string | null,
       questions:  {
         __typename: "ModelQuestionConnection",
         nextToken: string | null,
@@ -726,7 +750,8 @@ export type OnCreateAnswerSubscription = {
         __typename: "Level",
         id: string,
         boss: string,
-        background: string,
+        bossImgUrl: string | null,
+        background: string | null,
       } | null,
       answers:  {
         __typename: "ModelAnswerConnection",
@@ -750,7 +775,8 @@ export type OnUpdateAnswerSubscription = {
         __typename: "Level",
         id: string,
         boss: string,
-        background: string,
+        bossImgUrl: string | null,
+        background: string | null,
       } | null,
       answers:  {
         __typename: "ModelAnswerConnection",
@@ -774,7 +800,8 @@ export type OnDeleteAnswerSubscription = {
         __typename: "Level",
         id: string,
         boss: string,
-        background: string,
+        bossImgUrl: string | null,
+        background: string | null,
       } | null,
       answers:  {
         __typename: "ModelAnswerConnection",

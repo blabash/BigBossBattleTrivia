@@ -5,6 +5,7 @@ export const onCreateLevel = `subscription OnCreateLevel {
   onCreateLevel {
     id
     boss
+    bossImgUrl
     background
     questions {
       items {
@@ -20,6 +21,7 @@ export const onUpdateLevel = `subscription OnUpdateLevel {
   onUpdateLevel {
     id
     boss
+    bossImgUrl
     background
     questions {
       items {
@@ -35,6 +37,7 @@ export const onDeleteLevel = `subscription OnDeleteLevel {
   onDeleteLevel {
     id
     boss
+    bossImgUrl
     background
     questions {
       items {
@@ -53,6 +56,7 @@ export const onCreateQuestion = `subscription OnCreateQuestion {
     level {
       id
       boss
+      bossImgUrl
       background
       questions {
         nextToken
@@ -76,6 +80,7 @@ export const onUpdateQuestion = `subscription OnUpdateQuestion {
     level {
       id
       boss
+      bossImgUrl
       background
       questions {
         nextToken
@@ -99,6 +104,7 @@ export const onDeleteQuestion = `subscription OnDeleteQuestion {
     level {
       id
       boss
+      bossImgUrl
       background
       questions {
         nextToken
@@ -125,6 +131,7 @@ export const onCreateAnswer = `subscription OnCreateAnswer {
       level {
         id
         boss
+        bossImgUrl
         background
       }
       answers {
@@ -145,6 +152,7 @@ export const onUpdateAnswer = `subscription OnUpdateAnswer {
       level {
         id
         boss
+        bossImgUrl
         background
       }
       answers {
@@ -165,6 +173,7 @@ export const onDeleteAnswer = `subscription OnDeleteAnswer {
       level {
         id
         boss
+        bossImgUrl
         background
       }
       answers {

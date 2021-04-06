@@ -1,4 +1,7 @@
 import * as React from "react";
+import {API, graphqlOperation} from 'aws-amplify'
+import awsconfig from '../src/aws-exports'
+API.configure(awsconfig)
 
 const App = () => {
   return (

@@ -5,6 +5,7 @@ export const getLevel = `query GetLevel($id: ID!) {
   getLevel(id: $id) {
     id
     boss
+    bossImgUrl
     background
     questions {
       items {
@@ -25,6 +26,7 @@ export const listLevels = `query ListLevels(
     items {
       id
       boss
+      bossImgUrl
       background
       questions {
         nextToken
@@ -41,6 +43,7 @@ export const getQuestion = `query GetQuestion($id: ID!) {
     level {
       id
       boss
+      bossImgUrl
       background
       questions {
         nextToken
@@ -69,6 +72,7 @@ export const listQuestions = `query ListQuestions(
       level {
         id
         boss
+        bossImgUrl
         background
       }
       answers {
@@ -89,6 +93,7 @@ export const getAnswer = `query GetAnswer($id: ID!) {
       level {
         id
         boss
+        bossImgUrl
         background
       }
       answers {

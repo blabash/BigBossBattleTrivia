@@ -8,6 +8,7 @@ export const createLevel = `mutation CreateLevel(
   createLevel(input: $input, condition: $condition) {
     id
     boss
+    bossImgUrl
     background
     questions {
       items {
@@ -26,6 +27,7 @@ export const updateLevel = `mutation UpdateLevel(
   updateLevel(input: $input, condition: $condition) {
     id
     boss
+    bossImgUrl
     background
     questions {
       items {
@@ -44,6 +46,7 @@ export const deleteLevel = `mutation DeleteLevel(
   deleteLevel(input: $input, condition: $condition) {
     id
     boss
+    bossImgUrl
     background
     questions {
       items {
@@ -65,6 +68,7 @@ export const createQuestion = `mutation CreateQuestion(
     level {
       id
       boss
+      bossImgUrl
       background
       questions {
         nextToken
@@ -91,6 +95,7 @@ export const updateQuestion = `mutation UpdateQuestion(
     level {
       id
       boss
+      bossImgUrl
       background
       questions {
         nextToken
@@ -117,6 +122,7 @@ export const deleteQuestion = `mutation DeleteQuestion(
     level {
       id
       boss
+      bossImgUrl
       background
       questions {
         nextToken
@@ -146,6 +152,7 @@ export const createAnswer = `mutation CreateAnswer(
       level {
         id
         boss
+        bossImgUrl
         background
       }
       answers {
@@ -169,6 +176,7 @@ export const updateAnswer = `mutation UpdateAnswer(
       level {
         id
         boss
+        bossImgUrl
         background
       }
       answers {
@@ -192,6 +200,7 @@ export const deleteAnswer = `mutation DeleteAnswer(
       level {
         id
         boss
+        bossImgUrl
         background
       }
       answers {
