@@ -1,8 +1,10 @@
 import * as React from "react";
-import API, { graphqlOperation, GraphQLResult } from "@aws-amplify/api-graphql";
+import API, { graphqlOperation } from "@aws-amplify/api-graphql";
 import {ListLevelsQuery} from '../src/API'
 import awsExports from '../src/aws-exports'
 import { listLevels } from "../src/graphql/queries";
+import Image from 'next/image'
+import Head from 'next/head'
 API.configure(awsExports)
 
 type Props = {
@@ -13,6 +15,10 @@ const StartScreen = ({levels}: Props) => {
   console.log(levels)
   return (
     <>
+      <Head>
+        <title>Big Boss Battle Trivia</title>
+        <link rel="icon" href="/onslaught_hexagon.png"/>
+      </Head>
       <header>
         <h2>BIG BOSS BATTLE TRIVIA</h2>
       </header>
@@ -20,7 +26,7 @@ const StartScreen = ({levels}: Props) => {
         {levels.map(level => (
           <li key={level.id}>
             {level.boss}
-            <img src={level.bossImgUrl}/>
+            <Image src={level.bossImgUrl} height={250} width={250} layout={'intrinsic'}/>
           </li>
         ))}
       </ul>
@@ -28,20 +34,32 @@ const StartScreen = ({levels}: Props) => {
   );
 };
 
-StartScreen.getInitialProps = async () => {
+export async function getStaticProps() {
   try {
     const response = (await API.graphql(graphqlOperation(listLevels))) as {
-      data: ListLevelsQuery
+      data: ListLevelsQuery, errors: {}[]
     }
-
     if (response.data.listLevels !== null) {
-      return {levels: response.data.listLevels.items}
+      return {
+        props: {
+          levels: response.data.listLevels.items
+        }
+      }
     } else {
-      return {levels: []}
+      console.warn('Failed to fetch levels. ', response.errors)
+      return {
+        props: {
+          levels: []
+        }
+      }
     }
   } catch (error) {
     console.warn(error)
-    return { levels: [] }
+    return {
+        props: {
+          levels: []
+        }
+      }
   }
 }
 
