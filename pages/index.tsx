@@ -9,6 +9,8 @@ type Props = {
   bosses: ListBosssQuery['listBosss']['items'];
 };
 
+const ROUTE_BOSS_SLUG = '/[slug]';
+
 const StartScreen = ({ bosses }: Props) => {
   return (
     <>
@@ -21,7 +23,10 @@ const StartScreen = ({ bosses }: Props) => {
         {bosses.map(({ id, name, bossImgUrl, slug }) => (
           <li key={id}>
             {name}
-            <Link href={`/${slug}`}>
+            <Link
+              href={{ pathname: ROUTE_BOSS_SLUG, query: { id } }}
+              as={`/${slug}`}
+            >
               <a>
                 <Image
                   src={bossImgUrl}

@@ -1,10 +1,18 @@
 import Link from 'next/link';
 import React from 'react';
 import { getBossData, getBossSlugs } from '../lib/bosses';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 export default function Boss() {
+  const router = useRouter();
+  console.log(router);
   return (
     <div>
+      <Head>
+        <title>Deathwing cometh</title>
+        <link rel='icon' href='/onslaught_hexagon.png' />
+      </Head>
       <Link href='/'>
         <a>Home</a>
       </Link>{' '}
@@ -22,7 +30,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(ctx) {
-  console.log('ctx ', ctx);
   const bossData = await getBossData(ctx.params.slug);
   return {
     props: {
