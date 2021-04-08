@@ -1,10 +1,11 @@
 // tslint:disable
 // this is an auto generated file. This will be overwritten
 
-export const onCreateLevel = `subscription OnCreateLevel {
-  onCreateLevel {
+export const onCreateBoss = `subscription OnCreateBoss {
+  onCreateBoss {
     id
-    boss
+    name
+    slug
     bossImgUrl
     background
     questions {
@@ -17,10 +18,11 @@ export const onCreateLevel = `subscription OnCreateLevel {
   }
 }
 `;
-export const onUpdateLevel = `subscription OnUpdateLevel {
-  onUpdateLevel {
+export const onUpdateBoss = `subscription OnUpdateBoss {
+  onUpdateBoss {
     id
-    boss
+    name
+    slug
     bossImgUrl
     background
     questions {
@@ -33,10 +35,11 @@ export const onUpdateLevel = `subscription OnUpdateLevel {
   }
 }
 `;
-export const onDeleteLevel = `subscription OnDeleteLevel {
-  onDeleteLevel {
+export const onDeleteBoss = `subscription OnDeleteBoss {
+  onDeleteBoss {
     id
-    boss
+    name
+    slug
     bossImgUrl
     background
     questions {
@@ -53,9 +56,10 @@ export const onCreateQuestion = `subscription OnCreateQuestion {
   onCreateQuestion {
     id
     text
-    level {
+    boss {
       id
-      boss
+      name
+      slug
       bossImgUrl
       background
       questions {
@@ -77,9 +81,10 @@ export const onUpdateQuestion = `subscription OnUpdateQuestion {
   onUpdateQuestion {
     id
     text
-    level {
+    boss {
       id
-      boss
+      name
+      slug
       bossImgUrl
       background
       questions {
@@ -101,9 +106,10 @@ export const onDeleteQuestion = `subscription OnDeleteQuestion {
   onDeleteQuestion {
     id
     text
-    level {
+    boss {
       id
-      boss
+      name
+      slug
       bossImgUrl
       background
       questions {
@@ -128,9 +134,10 @@ export const onCreateAnswer = `subscription OnCreateAnswer {
     question {
       id
       text
-      level {
+      boss {
         id
-        boss
+        name
+        slug
         bossImgUrl
         background
       }
@@ -149,9 +156,10 @@ export const onUpdateAnswer = `subscription OnUpdateAnswer {
     question {
       id
       text
-      level {
+      boss {
         id
-        boss
+        name
+        slug
         bossImgUrl
         background
       }
@@ -170,9 +178,10 @@ export const onDeleteAnswer = `subscription OnDeleteAnswer {
     question {
       id
       text
-      level {
+      boss {
         id
-        boss
+        name
+        slug
         bossImgUrl
         background
       }

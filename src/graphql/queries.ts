@@ -1,10 +1,11 @@
 // tslint:disable
 // this is an auto generated file. This will be overwritten
 
-export const getLevel = `query GetLevel($id: ID!) {
-  getLevel(id: $id) {
+export const getBoss = `query GetBoss($id: ID!) {
+  getBoss(id: $id) {
     id
-    boss
+    name
+    slug
     bossImgUrl
     background
     questions {
@@ -17,15 +18,16 @@ export const getLevel = `query GetLevel($id: ID!) {
   }
 }
 `;
-export const listLevels = `query ListLevels(
-  $filter: ModelLevelFilterInput
+export const listBosss = `query ListBosss(
+  $filter: ModelBossFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listLevels(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  listBosss(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      boss
+      name
+      slug
       bossImgUrl
       background
       questions {
@@ -40,9 +42,10 @@ export const getQuestion = `query GetQuestion($id: ID!) {
   getQuestion(id: $id) {
     id
     text
-    level {
+    boss {
       id
-      boss
+      name
+      slug
       bossImgUrl
       background
       questions {
@@ -69,9 +72,10 @@ export const listQuestions = `query ListQuestions(
     items {
       id
       text
-      level {
+      boss {
         id
-        boss
+        name
+        slug
         bossImgUrl
         background
       }
@@ -90,9 +94,10 @@ export const getAnswer = `query GetAnswer($id: ID!) {
     question {
       id
       text
-      level {
+      boss {
         id
-        boss
+        name
+        slug
         bossImgUrl
         background
       }

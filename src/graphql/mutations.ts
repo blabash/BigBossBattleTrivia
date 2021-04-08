@@ -1,13 +1,14 @@
 // tslint:disable
 // this is an auto generated file. This will be overwritten
 
-export const createLevel = `mutation CreateLevel(
-  $input: CreateLevelInput!
-  $condition: ModelLevelConditionInput
+export const createBoss = `mutation CreateBoss(
+  $input: CreateBossInput!
+  $condition: ModelBossConditionInput
 ) {
-  createLevel(input: $input, condition: $condition) {
+  createBoss(input: $input, condition: $condition) {
     id
-    boss
+    name
+    slug
     bossImgUrl
     background
     questions {
@@ -20,13 +21,14 @@ export const createLevel = `mutation CreateLevel(
   }
 }
 `;
-export const updateLevel = `mutation UpdateLevel(
-  $input: UpdateLevelInput!
-  $condition: ModelLevelConditionInput
+export const updateBoss = `mutation UpdateBoss(
+  $input: UpdateBossInput!
+  $condition: ModelBossConditionInput
 ) {
-  updateLevel(input: $input, condition: $condition) {
+  updateBoss(input: $input, condition: $condition) {
     id
-    boss
+    name
+    slug
     bossImgUrl
     background
     questions {
@@ -39,13 +41,14 @@ export const updateLevel = `mutation UpdateLevel(
   }
 }
 `;
-export const deleteLevel = `mutation DeleteLevel(
-  $input: DeleteLevelInput!
-  $condition: ModelLevelConditionInput
+export const deleteBoss = `mutation DeleteBoss(
+  $input: DeleteBossInput!
+  $condition: ModelBossConditionInput
 ) {
-  deleteLevel(input: $input, condition: $condition) {
+  deleteBoss(input: $input, condition: $condition) {
     id
-    boss
+    name
+    slug
     bossImgUrl
     background
     questions {
@@ -65,9 +68,10 @@ export const createQuestion = `mutation CreateQuestion(
   createQuestion(input: $input, condition: $condition) {
     id
     text
-    level {
+    boss {
       id
-      boss
+      name
+      slug
       bossImgUrl
       background
       questions {
@@ -92,9 +96,10 @@ export const updateQuestion = `mutation UpdateQuestion(
   updateQuestion(input: $input, condition: $condition) {
     id
     text
-    level {
+    boss {
       id
-      boss
+      name
+      slug
       bossImgUrl
       background
       questions {
@@ -119,9 +124,10 @@ export const deleteQuestion = `mutation DeleteQuestion(
   deleteQuestion(input: $input, condition: $condition) {
     id
     text
-    level {
+    boss {
       id
-      boss
+      name
+      slug
       bossImgUrl
       background
       questions {
@@ -149,9 +155,10 @@ export const createAnswer = `mutation CreateAnswer(
     question {
       id
       text
-      level {
+      boss {
         id
-        boss
+        name
+        slug
         bossImgUrl
         background
       }
@@ -173,9 +180,10 @@ export const updateAnswer = `mutation UpdateAnswer(
     question {
       id
       text
-      level {
+      boss {
         id
-        boss
+        name
+        slug
         bossImgUrl
         background
       }
@@ -197,9 +205,10 @@ export const deleteAnswer = `mutation DeleteAnswer(
     question {
       id
       text
-      level {
+      boss {
         id
-        boss
+        name
+        slug
         bossImgUrl
         background
       }

@@ -1,20 +1,22 @@
 /* tslint:disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateLevelInput = {
+export type CreateBossInput = {
   id?: string | null,
-  boss: string,
+  name: string,
+  slug: string,
   bossImgUrl?: string | null,
   background?: string | null,
 };
 
-export type ModelLevelConditionInput = {
-  boss?: ModelStringInput | null,
+export type ModelBossConditionInput = {
+  name?: ModelStringInput | null,
+  slug?: ModelStringInput | null,
   bossImgUrl?: ModelStringInput | null,
   background?: ModelStringInput | null,
-  and?: Array< ModelLevelConditionInput | null > | null,
-  or?: Array< ModelLevelConditionInput | null > | null,
-  not?: ModelLevelConditionInput | null,
+  and?: Array< ModelBossConditionInput | null > | null,
+  or?: Array< ModelBossConditionInput | null > | null,
+  not?: ModelBossConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -57,21 +59,22 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
-export type UpdateLevelInput = {
+export type UpdateBossInput = {
   id: string,
-  boss?: string | null,
+  name?: string | null,
+  slug?: string | null,
   bossImgUrl?: string | null,
   background?: string | null,
 };
 
-export type DeleteLevelInput = {
+export type DeleteBossInput = {
   id?: string | null,
 };
 
 export type CreateQuestionInput = {
   id?: string | null,
   text: string,
-  questionLevelId?: string | null,
+  questionBossId?: string | null,
 };
 
 export type ModelQuestionConditionInput = {
@@ -84,7 +87,7 @@ export type ModelQuestionConditionInput = {
 export type UpdateQuestionInput = {
   id: string,
   text?: string | null,
-  questionLevelId?: string | null,
+  questionBossId?: string | null,
 };
 
 export type DeleteQuestionInput = {
@@ -124,14 +127,15 @@ export type DeleteAnswerInput = {
   id?: string | null,
 };
 
-export type ModelLevelFilterInput = {
+export type ModelBossFilterInput = {
   id?: ModelIDInput | null,
-  boss?: ModelStringInput | null,
+  name?: ModelStringInput | null,
+  slug?: ModelStringInput | null,
   bossImgUrl?: ModelStringInput | null,
   background?: ModelStringInput | null,
-  and?: Array< ModelLevelFilterInput | null > | null,
-  or?: Array< ModelLevelFilterInput | null > | null,
-  not?: ModelLevelFilterInput | null,
+  and?: Array< ModelBossFilterInput | null > | null,
+  or?: Array< ModelBossFilterInput | null > | null,
+  not?: ModelBossFilterInput | null,
 };
 
 export type ModelIDInput = {
@@ -167,16 +171,17 @@ export type ModelAnswerFilterInput = {
   not?: ModelAnswerFilterInput | null,
 };
 
-export type CreateLevelMutationVariables = {
-  input: CreateLevelInput,
-  condition?: ModelLevelConditionInput | null,
+export type CreateBossMutationVariables = {
+  input: CreateBossInput,
+  condition?: ModelBossConditionInput | null,
 };
 
-export type CreateLevelMutation = {
-  createLevel:  {
-    __typename: "Level",
+export type CreateBossMutation = {
+  createBoss:  {
+    __typename: "Boss",
     id: string,
-    boss: string,
+    name: string,
+    slug: string,
     bossImgUrl: string | null,
     background: string | null,
     questions:  {
@@ -191,16 +196,17 @@ export type CreateLevelMutation = {
   } | null,
 };
 
-export type UpdateLevelMutationVariables = {
-  input: UpdateLevelInput,
-  condition?: ModelLevelConditionInput | null,
+export type UpdateBossMutationVariables = {
+  input: UpdateBossInput,
+  condition?: ModelBossConditionInput | null,
 };
 
-export type UpdateLevelMutation = {
-  updateLevel:  {
-    __typename: "Level",
+export type UpdateBossMutation = {
+  updateBoss:  {
+    __typename: "Boss",
     id: string,
-    boss: string,
+    name: string,
+    slug: string,
     bossImgUrl: string | null,
     background: string | null,
     questions:  {
@@ -215,16 +221,17 @@ export type UpdateLevelMutation = {
   } | null,
 };
 
-export type DeleteLevelMutationVariables = {
-  input: DeleteLevelInput,
-  condition?: ModelLevelConditionInput | null,
+export type DeleteBossMutationVariables = {
+  input: DeleteBossInput,
+  condition?: ModelBossConditionInput | null,
 };
 
-export type DeleteLevelMutation = {
-  deleteLevel:  {
-    __typename: "Level",
+export type DeleteBossMutation = {
+  deleteBoss:  {
+    __typename: "Boss",
     id: string,
-    boss: string,
+    name: string,
+    slug: string,
     bossImgUrl: string | null,
     background: string | null,
     questions:  {
@@ -249,10 +256,11 @@ export type CreateQuestionMutation = {
     __typename: "Question",
     id: string,
     text: string,
-    level:  {
-      __typename: "Level",
+    boss:  {
+      __typename: "Boss",
       id: string,
-      boss: string,
+      name: string,
+      slug: string,
       bossImgUrl: string | null,
       background: string | null,
       questions:  {
@@ -283,10 +291,11 @@ export type UpdateQuestionMutation = {
     __typename: "Question",
     id: string,
     text: string,
-    level:  {
-      __typename: "Level",
+    boss:  {
+      __typename: "Boss",
       id: string,
-      boss: string,
+      name: string,
+      slug: string,
       bossImgUrl: string | null,
       background: string | null,
       questions:  {
@@ -317,10 +326,11 @@ export type DeleteQuestionMutation = {
     __typename: "Question",
     id: string,
     text: string,
-    level:  {
-      __typename: "Level",
+    boss:  {
+      __typename: "Boss",
       id: string,
-      boss: string,
+      name: string,
+      slug: string,
       bossImgUrl: string | null,
       background: string | null,
       questions:  {
@@ -355,10 +365,11 @@ export type CreateAnswerMutation = {
       __typename: "Question",
       id: string,
       text: string,
-      level:  {
-        __typename: "Level",
+      boss:  {
+        __typename: "Boss",
         id: string,
-        boss: string,
+        name: string,
+        slug: string,
         bossImgUrl: string | null,
         background: string | null,
       } | null,
@@ -385,10 +396,11 @@ export type UpdateAnswerMutation = {
       __typename: "Question",
       id: string,
       text: string,
-      level:  {
-        __typename: "Level",
+      boss:  {
+        __typename: "Boss",
         id: string,
-        boss: string,
+        name: string,
+        slug: string,
         bossImgUrl: string | null,
         background: string | null,
       } | null,
@@ -415,10 +427,11 @@ export type DeleteAnswerMutation = {
       __typename: "Question",
       id: string,
       text: string,
-      level:  {
-        __typename: "Level",
+      boss:  {
+        __typename: "Boss",
         id: string,
-        boss: string,
+        name: string,
+        slug: string,
         bossImgUrl: string | null,
         background: string | null,
       } | null,
@@ -431,15 +444,16 @@ export type DeleteAnswerMutation = {
   } | null,
 };
 
-export type GetLevelQueryVariables = {
+export type GetBossQueryVariables = {
   id: string,
 };
 
-export type GetLevelQuery = {
-  getLevel:  {
-    __typename: "Level",
+export type GetBossQuery = {
+  getBoss:  {
+    __typename: "Boss",
     id: string,
-    boss: string,
+    name: string,
+    slug: string,
     bossImgUrl: string | null,
     background: string | null,
     questions:  {
@@ -454,19 +468,20 @@ export type GetLevelQuery = {
   } | null,
 };
 
-export type ListLevelsQueryVariables = {
-  filter?: ModelLevelFilterInput | null,
+export type ListBosssQueryVariables = {
+  filter?: ModelBossFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListLevelsQuery = {
-  listLevels:  {
-    __typename: "ModelLevelConnection",
+export type ListBosssQuery = {
+  listBosss:  {
+    __typename: "ModelBossConnection",
     items:  Array< {
-      __typename: "Level",
+      __typename: "Boss",
       id: string,
-      boss: string,
+      name: string,
+      slug: string,
       bossImgUrl: string | null,
       background: string | null,
       questions:  {
@@ -487,10 +502,11 @@ export type GetQuestionQuery = {
     __typename: "Question",
     id: string,
     text: string,
-    level:  {
-      __typename: "Level",
+    boss:  {
+      __typename: "Boss",
       id: string,
-      boss: string,
+      name: string,
+      slug: string,
       bossImgUrl: string | null,
       background: string | null,
       questions:  {
@@ -524,10 +540,11 @@ export type ListQuestionsQuery = {
       __typename: "Question",
       id: string,
       text: string,
-      level:  {
-        __typename: "Level",
+      boss:  {
+        __typename: "Boss",
         id: string,
-        boss: string,
+        name: string,
+        slug: string,
         bossImgUrl: string | null,
         background: string | null,
       } | null,
@@ -553,10 +570,11 @@ export type GetAnswerQuery = {
       __typename: "Question",
       id: string,
       text: string,
-      level:  {
-        __typename: "Level",
+      boss:  {
+        __typename: "Boss",
         id: string,
-        boss: string,
+        name: string,
+        slug: string,
         bossImgUrl: string | null,
         background: string | null,
       } | null,
@@ -593,11 +611,12 @@ export type ListAnswersQuery = {
   } | null,
 };
 
-export type OnCreateLevelSubscription = {
-  onCreateLevel:  {
-    __typename: "Level",
+export type OnCreateBossSubscription = {
+  onCreateBoss:  {
+    __typename: "Boss",
     id: string,
-    boss: string,
+    name: string,
+    slug: string,
     bossImgUrl: string | null,
     background: string | null,
     questions:  {
@@ -612,11 +631,12 @@ export type OnCreateLevelSubscription = {
   } | null,
 };
 
-export type OnUpdateLevelSubscription = {
-  onUpdateLevel:  {
-    __typename: "Level",
+export type OnUpdateBossSubscription = {
+  onUpdateBoss:  {
+    __typename: "Boss",
     id: string,
-    boss: string,
+    name: string,
+    slug: string,
     bossImgUrl: string | null,
     background: string | null,
     questions:  {
@@ -631,11 +651,12 @@ export type OnUpdateLevelSubscription = {
   } | null,
 };
 
-export type OnDeleteLevelSubscription = {
-  onDeleteLevel:  {
-    __typename: "Level",
+export type OnDeleteBossSubscription = {
+  onDeleteBoss:  {
+    __typename: "Boss",
     id: string,
-    boss: string,
+    name: string,
+    slug: string,
     bossImgUrl: string | null,
     background: string | null,
     questions:  {
@@ -655,10 +676,11 @@ export type OnCreateQuestionSubscription = {
     __typename: "Question",
     id: string,
     text: string,
-    level:  {
-      __typename: "Level",
+    boss:  {
+      __typename: "Boss",
       id: string,
-      boss: string,
+      name: string,
+      slug: string,
       bossImgUrl: string | null,
       background: string | null,
       questions:  {
@@ -684,10 +706,11 @@ export type OnUpdateQuestionSubscription = {
     __typename: "Question",
     id: string,
     text: string,
-    level:  {
-      __typename: "Level",
+    boss:  {
+      __typename: "Boss",
       id: string,
-      boss: string,
+      name: string,
+      slug: string,
       bossImgUrl: string | null,
       background: string | null,
       questions:  {
@@ -713,10 +736,11 @@ export type OnDeleteQuestionSubscription = {
     __typename: "Question",
     id: string,
     text: string,
-    level:  {
-      __typename: "Level",
+    boss:  {
+      __typename: "Boss",
       id: string,
-      boss: string,
+      name: string,
+      slug: string,
       bossImgUrl: string | null,
       background: string | null,
       questions:  {
@@ -746,10 +770,11 @@ export type OnCreateAnswerSubscription = {
       __typename: "Question",
       id: string,
       text: string,
-      level:  {
-        __typename: "Level",
+      boss:  {
+        __typename: "Boss",
         id: string,
-        boss: string,
+        name: string,
+        slug: string,
         bossImgUrl: string | null,
         background: string | null,
       } | null,
@@ -771,10 +796,11 @@ export type OnUpdateAnswerSubscription = {
       __typename: "Question",
       id: string,
       text: string,
-      level:  {
-        __typename: "Level",
+      boss:  {
+        __typename: "Boss",
         id: string,
-        boss: string,
+        name: string,
+        slug: string,
         bossImgUrl: string | null,
         background: string | null,
       } | null,
@@ -796,10 +822,11 @@ export type OnDeleteAnswerSubscription = {
       __typename: "Question",
       id: string,
       text: string,
-      level:  {
-        __typename: "Level",
+      boss:  {
+        __typename: "Boss",
         id: string,
-        boss: string,
+        name: string,
+        slug: string,
         bossImgUrl: string | null,
         background: string | null,
       } | null,

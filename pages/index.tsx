@@ -1,32 +1,31 @@
 import * as React from "react";
-import API, { graphqlOperation } from "@aws-amplify/api-graphql";
-import {ListLevelsQuery} from '../src/API'
-import awsExports from '../src/aws-exports'
-import { listLevels } from "../src/graphql/queries";
+import {ListBosssQuery} from '../src/API'
 import Image from 'next/image'
 import Head from 'next/head'
-API.configure(awsExports)
+import Link from 'next/link'
+import {getBosss} from '../lib/bosses'
 
 type Props = {
-  levels: ListLevelsQuery["listLevels"]["items"]
+  bosses: ListBosssQuery["listBosss"]["items"]
 }
 
-const StartScreen = ({levels}: Props) => {
-  console.log(levels)
+const StartScreen = ({bosses}: Props) => {
   return (
     <>
       <Head>
         <title>Big Boss Battle Trivia</title>
         <link rel="icon" href="/onslaught_hexagon.png"/>
       </Head>
-      <header>
-        <h2>BIG BOSS BATTLE TRIVIA</h2>
-      </header>
+      <h2>BIG BOSS BATTLE TRIVIA</h2>
       <ul>
-        {levels.map(level => (
-          <li key={level.id}>
-            {level.boss}
-            <Image src={level.bossImgUrl} height={250} width={250} layout={'intrinsic'}/>
+        {bosses.map(({id, name, bossImgUrl, slug}) => (
+          <li key={id}>
+            {name}
+            <Link href={`/${slug}`}>
+              <a>
+                <Image src={bossImgUrl} height={250} width={250} layout={'intrinsic'}/>
+              </a>
+            </Link>
           </li>
         ))}
       </ul>
@@ -35,31 +34,12 @@ const StartScreen = ({levels}: Props) => {
 };
 
 export async function getStaticProps() {
-  try {
-    const response = (await API.graphql(graphqlOperation(listLevels))) as {
-      data: ListLevelsQuery, errors: {}[]
+  const bosses = await getBosss()
+  console.log(bosses)
+  return {
+    props: {
+      bosses
     }
-    if (response.data.listLevels !== null) {
-      return {
-        props: {
-          levels: response.data.listLevels.items
-        }
-      }
-    } else {
-      console.warn('Failed to fetch levels. ', response.errors)
-      return {
-        props: {
-          levels: []
-        }
-      }
-    }
-  } catch (error) {
-    console.warn(error)
-    return {
-        props: {
-          levels: []
-        }
-      }
   }
 }
 

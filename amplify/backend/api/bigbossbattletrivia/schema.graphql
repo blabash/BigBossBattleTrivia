@@ -1,14 +1,15 @@
-type Level @model {
+type Boss @model {
   id: ID!
-  boss: String!
+  name: String!
+  slug: String!
   bossImgUrl: AWSURL
   background: String
-  questions: [Question] @connection(name: "LevelQuestions")
+  questions: [Question] @connection(name: "BossQuestions")
 }
 type Question @model {
   id: ID!
   text: String!
-  level: Level @connection(name: "LevelQuestions")
+  boss: Boss @connection(name: "BossQuestions")
   answers: [Answer] @connection(name: "QuestionAnswers")
 }
 type Answer @model {
