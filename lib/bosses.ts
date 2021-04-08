@@ -1,44 +1,50 @@
 import API, { graphqlOperation } from '@aws-amplify/api-graphql';
-import { ListBosssQuery } from '../src/API';
+import { ListBosssQuery, GetBossQuery } from '../src/API';
 import awsExports from '../src/aws-exports';
-import { listBosss } from '../src/graphql/queries';
+import { listBosss, getBoss } from '../src/graphql/queries';
 API.configure(awsExports);
 
-
-export async function getBosss() {
+export async function getBosssData() {
   try {
     const response = (await API.graphql(graphqlOperation(listBosss))) as {
-      data: ListBosssQuery, errors: {}[]
-    }
-    if (response.data.listBosss !== null) {
-      return response.data.listBosss.items
-    } else {
-      console.warn('Failed to fetch bosses. ', response.errors)
-      return []
-    }
+      data: ListBosssQuery;
+    };
+    return response.data.listBosss.items;
   } catch (error) {
-    console.warn(error)
-    return []
+    console.warn(error);
   }
 }
 
-export async function getBossslugs() {
+export async function getBossSlugs() {
   try {
     const response = (await API.graphql(graphqlOperation(listBosss))) as {
-      data: ListBosssQuery, errors: {}[]
-    }
-    if (response.data.listBosss !== null) {
-      return response.data.listBosss.items.map(({slug}) => ({
-        params: {
-          slug
-        }
-      }))
-    } else {
-      console.warn('Failed to fetch bosses. ', response.errors)
-      return []
-    }
+      data: ListBosssQuery;
+    };
+    return response.data.listBosss.items.map(({ slug }) => ({
+      params: {
+        slug,
+      },
+    }));
   } catch (error) {
-    console.warn(error)
-    return []
+    console.warn(error);
+  }
+}
+
+export async function getBossData(slug: GetBossQuery['getBoss']['slug']) {
+  try {
+    const response = (await API.graphql(
+      graphqlOperation(listBosss, {
+        filter: {
+          slug: {
+            eq: slug,
+          },
+        },
+      })
+    )) as {
+      data: ListBosssQuery;
+    };
+    return response.data.listBosss.items;
+  } catch (error) {
+    console.warn(error);
   }
 }
