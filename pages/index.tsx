@@ -3,7 +3,7 @@ import { ListBosssQuery } from '../src/API';
 import Image from 'next/image';
 import Head from 'next/head';
 import Link from 'next/link';
-import { getBosssData } from '../lib/bosses';
+import { getBossesData } from '../lib/bosses';
 
 type Props = {
   bosses: ListBosssQuery['listBosss']['items'];
@@ -44,7 +44,7 @@ const StartScreen = ({ bosses }: Props) => {
 };
 
 export async function getStaticProps() {
-  const bosses = await getBosssData();
+  const bosses = await getBossesData();
   return {
     props: {
       bosses,

@@ -4,9 +4,9 @@ import { getBossData, getBossSlugs } from '../lib/bosses';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
-export default function Boss() {
+export default function Boss({ bossData }) {
+  console.log(bossData);
   const router = useRouter();
-  console.log(router);
   return (
     <div>
       <Head>
@@ -29,8 +29,8 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps(ctx) {
-  const bossData = await getBossData(ctx.params.slug);
+export async function getStaticProps({ params }) {
+  const bossData = await getBossData(params.slug);
   return {
     props: {
       bossData,
