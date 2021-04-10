@@ -1,13 +1,14 @@
 import API, { graphqlOperation } from '@aws-amplify/api-graphql';
-import { ListBosssQuery, GetBossQuery } from '../src/API';
+import { ListBosssQuery, GetQuestionQuery, GetBossQuery } from '../src/API';
 import awsExports from '../src/aws-exports';
-import { listBosss } from '../src/graphql/queries';
+import { listBosss, listQuestions } from '../src/graphql/queries';
 API.configure(awsExports);
 
 export async function getBossesData() {
   try {
     const response = (await API.graphql(graphqlOperation(listBosss))) as {
       data: ListBosssQuery;
+      error: {}[];
     };
     return response.data.listBosss.items;
   } catch (error) {
@@ -38,7 +39,7 @@ export async function getBossSlugs() {
   }
 }
 
-export async function getBossData(slug: GetBossQuery['getBoss']['slug']) {
+export async function getBossData(slug: string | string[]) {
   try {
     const response = (await API.graphql(
       graphqlOperation(listBosss, {
@@ -50,8 +51,42 @@ export async function getBossData(slug: GetBossQuery['getBoss']['slug']) {
       })
     )) as {
       data: ListBosssQuery;
+      error: {}[];
     };
     return response.data.listBosss.items[0];
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
+const bossQuestions = `query GetQuestionsByBossId($id: ID!) {
+  getBoss(id: $id) {
+    questions {
+      items {
+        text
+        id
+        answers {
+          items {
+            correct
+            text
+            id
+          }
+        }
+      }
+    }
+  }
+}`;
+
+export async function getBossQuestions(id: string) {
+  try {
+    const response = (await API.graphql(
+      graphqlOperation(bossQuestions, { id })
+    )) as {
+      data: GetBossQuery;
+      error: {}[];
+    };
+
+    return response.data.getBoss.questions.items;
   } catch (error) {
     console.warn(error);
   }
