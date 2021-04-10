@@ -1,5 +1,5 @@
 import API, { graphqlOperation } from '@aws-amplify/api-graphql';
-import { ListBosssQuery, GetQuestionQuery, GetBossQuery } from '../src/API';
+import { ListBosssQuery, GetBossQuery } from '../src/API';
 import awsExports from '../src/aws-exports';
 import { listBosss, listQuestions } from '../src/graphql/queries';
 API.configure(awsExports);
