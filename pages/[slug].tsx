@@ -93,9 +93,9 @@ export default function Boss({
       )}
       {roundStarted && questionsRef.current && (
         <div>
-          <p>{questionsRef.current[currQuestionIdx].text}</p>
+          <p>{questionsRef.current[currQuestionIdx]?.text}</p>
           <ul>
-            {questionsRef.current[currQuestionIdx].answers.items.map(
+            {questionsRef.current[currQuestionIdx]?.answers?.items?.map(
               ({ text, id }, idx) => (
                 <li key={id}>
                   <button
@@ -112,9 +112,9 @@ export default function Boss({
             <p>
               you said:{' '}
               {
-                questionsRef.current[currQuestionIdx].answers.items[
+                questionsRef.current[currQuestionIdx]?.answers?.items[
                   givenAnswerIdx
-                ].text
+                ]?.text
               }
             </p>
           )}
