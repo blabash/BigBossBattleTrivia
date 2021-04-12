@@ -79,12 +79,8 @@ export const createQuestion = `mutation CreateQuestion(
       }
     }
     answers {
-      items {
-        id
-        text
-        correct
-      }
-      nextToken
+      text
+      correct
     }
   }
 }
@@ -107,12 +103,8 @@ export const updateQuestion = `mutation UpdateQuestion(
       }
     }
     answers {
-      items {
-        id
-        text
-        correct
-      }
-      nextToken
+      text
+      correct
     }
   }
 }
@@ -135,88 +127,9 @@ export const deleteQuestion = `mutation DeleteQuestion(
       }
     }
     answers {
-      items {
-        id
-        text
-        correct
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const createAnswer = `mutation CreateAnswer(
-  $input: CreateAnswerInput!
-  $condition: ModelAnswerConditionInput
-) {
-  createAnswer(input: $input, condition: $condition) {
-    id
-    text
-    question {
-      id
       text
-      boss {
-        id
-        name
-        slug
-        bossImgUrl
-        background
-      }
-      answers {
-        nextToken
-      }
+      correct
     }
-    correct
-  }
-}
-`;
-export const updateAnswer = `mutation UpdateAnswer(
-  $input: UpdateAnswerInput!
-  $condition: ModelAnswerConditionInput
-) {
-  updateAnswer(input: $input, condition: $condition) {
-    id
-    text
-    question {
-      id
-      text
-      boss {
-        id
-        name
-        slug
-        bossImgUrl
-        background
-      }
-      answers {
-        nextToken
-      }
-    }
-    correct
-  }
-}
-`;
-export const deleteAnswer = `mutation DeleteAnswer(
-  $input: DeleteAnswerInput!
-  $condition: ModelAnswerConditionInput
-) {
-  deleteAnswer(input: $input, condition: $condition) {
-    id
-    text
-    question {
-      id
-      text
-      boss {
-        id
-        name
-        slug
-        bossImgUrl
-        background
-      }
-      answers {
-        nextToken
-      }
-    }
-    correct
   }
 }
 `;

@@ -9,12 +9,10 @@ type Boss @model {
 type Question @model {
   id: ID!
   text: String!
-  boss: Boss @connection(name: "BossQuestions")
-  answers: [Answer] @connection(name: "QuestionAnswers")
+  boss: Boss! @connection(name: "BossQuestions")
+  answers: [Answer!]!
 }
-type Answer @model {
-  id: ID!
+type Answer {
   text: String!
-  question: Question @connection(name: "QuestionAnswers")
-  correct: Boolean
+  correct: Boolean!
 }

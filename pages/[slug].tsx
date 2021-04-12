@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import { getBossData, getBossSlugs, getBossQuestions } from '../lib/bosses';
-import { useRouter } from 'next/router';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -11,14 +10,13 @@ export default function Boss({
   bossData,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [currQuestionIdx, setCurrQuestionIdx] = useState(0);
-  const [givenAnswerIdx, setGivenAnswerIdx] = useState<0 | 1 | 2 | 3 | null>(
-    null
-  );
+  const [givenAnswerIdx, setGivenAnswerIdx] = useState<number | null>(null);
   const [goToNextQuestion, setGoToNextQuestion] = useState(false);
   const [roundStarted, setRoundStarted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(5);
-
-  const questionsRef = useRef(null);
+  const [questions, setQuestions] = useState<
+    GetBossQuery['getBoss']['questions']['items'] | null
+  >(null);
 
   const timeRemainingId = useRef<number | null>(null);
   const clearTimeRemaining = () =>
@@ -28,7 +26,7 @@ export default function Boss({
     const fetchQuestions = async () => {
       const questions = await getBossQuestions(bossData.id);
       console.log(questions);
-      questionsRef.current = questions;
+      setQuestions(questions);
     };
 
     fetchQuestions();
@@ -49,7 +47,7 @@ export default function Boss({
     if (timeRemaining === 0 || givenAnswerIdx !== null) {
       clearTimeRemaining();
       id = window.setTimeout(() => {
-        if (currQuestionIdx === questionsRef.current.length - 1) {
+        if (currQuestionIdx === questions.length - 1) {
           setRoundStarted(false);
           setTimeRemaining(5);
           setCurrQuestionIdx(0);
@@ -77,7 +75,6 @@ export default function Boss({
         <a>Home</a>
       </Link>{' '}
       <h1>{bossData.name}</h1>
-      <h2>{timeRemaining}</h2>
       <Image
         src={bossData.bossImgUrl}
         height={300}
@@ -88,34 +85,29 @@ export default function Boss({
       {!roundStarted && (
         <button onClick={() => setRoundStarted(true)}>Begin</button>
       )}
-      {roundStarted && !questionsRef.current && (
+      {roundStarted && <h2>{timeRemaining}</h2>}
+      {roundStarted && !questions && (
         <p>Patience mortal, loading questions...</p>
       )}
-      {roundStarted && questionsRef.current && (
+      {roundStarted && questions && (
         <div>
-          <p>{questionsRef.current[currQuestionIdx]?.text}</p>
+          <p>{questions[currQuestionIdx]?.text}</p>
           <ul>
-            {questionsRef.current[currQuestionIdx]?.answers?.items?.map(
-              ({ text, id }, idx) => (
-                <li key={id}>
-                  <button
-                    onClick={() => setGivenAnswerIdx(idx)}
-                    disabled={givenAnswerIdx !== null || timeRemaining <= 0}
-                  >
-                    {text}
-                  </button>
-                </li>
-              )
-            )}
+            {questions[currQuestionIdx]?.answers?.map(({ text }, idx) => (
+              <li key={text}>
+                <button
+                  onClick={() => setGivenAnswerIdx(idx)}
+                  disabled={givenAnswerIdx !== null || timeRemaining <= 0}
+                >
+                  {text}
+                </button>
+              </li>
+            ))}
           </ul>
           {givenAnswerIdx !== null && (
             <p>
               you said:{' '}
-              {
-                questionsRef.current[currQuestionIdx]?.answers?.items[
-                  givenAnswerIdx
-                ]?.text
-              }
+              {questions[currQuestionIdx]?.answers?.[givenAnswerIdx]?.text}
             </p>
           )}
         </div>

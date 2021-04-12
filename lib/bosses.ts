@@ -1,7 +1,12 @@
 import API, { graphqlOperation } from '@aws-amplify/api-graphql';
-import { ListBosssQuery, GetBossQuery } from '../src/API';
+import {
+  ListBosssQuery,
+  GetBossQuery,
+  GetQuestionQuery,
+  ListQuestionsQuery,
+} from '../src/API';
 import awsExports from '../src/aws-exports';
-import { listBosss, listQuestions } from '../src/graphql/queries';
+import { getBoss, listBosss, listQuestions } from '../src/graphql/queries';
 API.configure(awsExports);
 
 export async function getBossesData() {
@@ -63,15 +68,12 @@ const bossQuestions = `query GetQuestionsByBossId($id: ID!) {
   getBoss(id: $id) {
     questions {
       items {
-        text
-        id
         answers {
-          items {
-            correct
-            text
-            id
-          }
+          correct
+          text
         }
+        id
+        text
       }
     }
   }

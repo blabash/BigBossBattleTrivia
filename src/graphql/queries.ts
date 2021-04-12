@@ -53,12 +53,8 @@ export const getQuestion = `query GetQuestion($id: ID!) {
       }
     }
     answers {
-      items {
-        id
-        text
-        correct
-      }
-      nextToken
+      text
+      correct
     }
   }
 }
@@ -80,49 +76,9 @@ export const listQuestions = `query ListQuestions(
         background
       }
       answers {
-        nextToken
-      }
-    }
-    nextToken
-  }
-}
-`;
-export const getAnswer = `query GetAnswer($id: ID!) {
-  getAnswer(id: $id) {
-    id
-    text
-    question {
-      id
-      text
-      boss {
-        id
-        name
-        slug
-        bossImgUrl
-        background
-      }
-      answers {
-        nextToken
-      }
-    }
-    correct
-  }
-}
-`;
-export const listAnswers = `query ListAnswers(
-  $filter: ModelAnswerFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listAnswers(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      text
-      question {
-        id
         text
+        correct
       }
-      correct
     }
     nextToken
   }

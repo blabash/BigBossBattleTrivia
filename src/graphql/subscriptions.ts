@@ -67,12 +67,8 @@ export const onCreateQuestion = `subscription OnCreateQuestion {
       }
     }
     answers {
-      items {
-        id
-        text
-        correct
-      }
-      nextToken
+      text
+      correct
     }
   }
 }
@@ -92,12 +88,8 @@ export const onUpdateQuestion = `subscription OnUpdateQuestion {
       }
     }
     answers {
-      items {
-        id
-        text
-        correct
-      }
-      nextToken
+      text
+      correct
     }
   }
 }
@@ -117,79 +109,9 @@ export const onDeleteQuestion = `subscription OnDeleteQuestion {
       }
     }
     answers {
-      items {
-        id
-        text
-        correct
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const onCreateAnswer = `subscription OnCreateAnswer {
-  onCreateAnswer {
-    id
-    text
-    question {
-      id
       text
-      boss {
-        id
-        name
-        slug
-        bossImgUrl
-        background
-      }
-      answers {
-        nextToken
-      }
+      correct
     }
-    correct
-  }
-}
-`;
-export const onUpdateAnswer = `subscription OnUpdateAnswer {
-  onUpdateAnswer {
-    id
-    text
-    question {
-      id
-      text
-      boss {
-        id
-        name
-        slug
-        bossImgUrl
-        background
-      }
-      answers {
-        nextToken
-      }
-    }
-    correct
-  }
-}
-`;
-export const onDeleteAnswer = `subscription OnDeleteAnswer {
-  onDeleteAnswer {
-    id
-    text
-    question {
-      id
-      text
-      boss {
-        id
-        name
-        slug
-        bossImgUrl
-        background
-      }
-      answers {
-        nextToken
-      }
-    }
-    correct
   }
 }
 `;
