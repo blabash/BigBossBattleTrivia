@@ -11,7 +11,6 @@ type InitialState = {
   timeRemaining: number;
   currQuestionIdx: number;
   givenAnswerIdx: number | null;
-  goToNextQuestion: boolean;
   roundStarted: boolean;
   playerHP: number;
   remainingPlayerHP: number;
@@ -33,8 +32,7 @@ type ACTIONTYPE =
       payload: GetBossQuery['getBoss']['questions']['items'];
     }
   | { type: 'damage_boss'; payload: number }
-  | { type: 'damage_player'; payload: number }
-  | { type: 'prevent_next_question' };
+  | { type: 'damage_player'; payload: number };
 
 function reducer(state: InitialState, action: ACTIONTYPE) {
   switch (action.type) {
@@ -49,7 +47,6 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
     case 'next_question':
       return {
         ...state,
-        goToNextQuestion: true,
         currQuestionIdx: state.currQuestionIdx + 1,
         givenAnswerIdx: null,
         timeRemaining: 5,
@@ -68,8 +65,6 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
         remainingPlayerHP: state.remainingPlayerHP - 1,
         givenAnswerIdx: action.payload,
       };
-    case 'prevent_next_question':
-      return { ...state, goToNextQuestion: false };
     default:
       console.warn('No matching type for that action.');
       return state;
@@ -84,7 +79,6 @@ function init(
     timeRemaining: 5,
     currQuestionIdx: 0,
     givenAnswerIdx: null,
-    goToNextQuestion: false,
     roundStarted: false,
     playerHP: 3,
     remainingPlayerHP: 3,
@@ -113,19 +107,20 @@ export default function Boss({
   }, []);
 
   useEffect(() => {
-    if (state.roundStarted === true || state.goToNextQuestion === true) {
-      dispatch({ type: 'prevent_next_question' });
-      timeRemainingId.current = window.setInterval(() => {
-        dispatch({ type: 'decrement_timer' });
-      }, 1000);
+    if (state.roundStarted === true || state.currQuestionIdx) {
+      if (state.roundStarted) {
+        timeRemainingId.current = window.setInterval(() => {
+          dispatch({ type: 'decrement_timer' });
+        }, 1000);
+      }
     }
     return clearTimeRemaining;
-  }, [state.roundStarted, state.goToNextQuestion]);
+  }, [state.roundStarted, state.currQuestionIdx]);
 
   useEffect(() => {
-    if (state.givenAnswerIdx !== null || state.timeRemaining <= 0) {
+    if (state.givenAnswerIdx !== null || state.timeRemaining === 0) {
       clearTimeRemaining();
-      if (state.timeRemaining <= 0) {
+      if (state.timeRemaining === 0) {
         dispatch({ type: 'damage_player', payload: null });
       }
     }
