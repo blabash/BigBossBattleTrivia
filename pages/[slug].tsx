@@ -25,15 +25,15 @@ type ACTIONTYPE =
       payload: GetBossQuery['getBoss']['questions']['items'];
     }
   | { type: 'start_round' }
+  | { type: 'end_round' }
   | { type: 'decrement_timer' }
-  | { type: 'set_given_answer_idx'; payload: number }
-  | { type: 'go_to_next_question' }
+  | { type: 'next_question' }
   | {
       type: 'reset_round';
       payload: GetBossQuery['getBoss']['questions']['items'];
     }
-  | { type: 'damage_boss' }
-  | { type: 'damage_player' }
+  | { type: 'damage_boss'; payload: number }
+  | { type: 'damage_player'; payload: number }
   | { type: 'prevent_next_question' };
 
 function reducer(state: InitialState, action: ACTIONTYPE) {
@@ -42,11 +42,11 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
       return { ...state, questions: action.payload };
     case 'start_round':
       return { ...state, roundStarted: true };
+    case 'end_round':
+      return { ...state, roundStarted: false };
     case 'decrement_timer':
       return { ...state, timeRemaining: state.timeRemaining - 1 };
-    case 'set_given_answer_idx':
-      return { ...state, givenAnswerIdx: action.payload };
-    case 'go_to_next_question':
+    case 'next_question':
       return {
         ...state,
         goToNextQuestion: true,
@@ -57,9 +57,17 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
     case 'reset_round':
       return init(action.payload);
     case 'damage_boss':
-      return { ...state, remainingBossHP: state.remainingBossHP - 1 };
+      return {
+        ...state,
+        remainingBossHP: state.remainingBossHP - 1,
+        givenAnswerIdx: action.payload,
+      };
     case 'damage_player':
-      return { ...state, remainingPlayerHP: state.remainingPlayerHP - 1 };
+      return {
+        ...state,
+        remainingPlayerHP: state.remainingPlayerHP - 1,
+        givenAnswerIdx: action.payload,
+      };
     case 'prevent_next_question':
       return { ...state, goToNextQuestion: false };
     default:
@@ -80,8 +88,8 @@ function init(
     roundStarted: false,
     playerHP: 3,
     remainingPlayerHP: 3,
-    bossHP: 20,
-    remainingBossHP: 20,
+    bossHP: 3,
+    remainingBossHP: 3,
   };
 }
 
@@ -115,21 +123,30 @@ export default function Boss({
   }, [state.roundStarted, state.goToNextQuestion]);
 
   useEffect(() => {
-    let id: number;
-
-    if (state.timeRemaining === 0 || state.givenAnswerIdx !== null) {
+    if (state.givenAnswerIdx !== null || state.timeRemaining <= 0) {
       clearTimeRemaining();
-      id = window.setTimeout(() => {
-        if (state.currQuestionIdx === state.questions.length - 1) {
-          dispatch({ type: 'reset_round', payload: state.questions });
-          return;
-        }
-        dispatch({ type: 'go_to_next_question' });
-      }, 2000);
+      if (state.timeRemaining <= 0) {
+        dispatch({ type: 'damage_player', payload: null });
+      }
     }
+  }, [state.givenAnswerIdx, state.timeRemaining]);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      if (
+        state.remainingBossHP >= 1 &&
+        state.remainingPlayerHP >= 1 &&
+        state.roundStarted
+      ) {
+        dispatch({ type: 'next_question' });
+        return;
+      } else if (state.currQuestionIdx > 0) {
+        dispatch({ type: 'end_round' });
+      }
+    }, 2000);
 
     return () => window.clearTimeout(id);
-  }, [state.timeRemaining, state.givenAnswerIdx]);
+  }, [state.remainingPlayerHP, state.remainingBossHP]);
 
   return (
     <div>
@@ -148,9 +165,29 @@ export default function Boss({
         layout={'intrinsic'}
       />
       <br />
-      {!state.roundStarted && (
-        <button onClick={() => dispatch({ type: 'start_round' })}>Begin</button>
-      )}
+      {!state.roundStarted &&
+        state.remainingBossHP === state.bossHP &&
+        state.remainingPlayerHP === state.playerHP && (
+          <button onClick={() => dispatch({ type: 'start_round' })}>
+            Begin
+          </button>
+        )}
+      {!state.roundStarted &&
+        (state.remainingPlayerHP === 0 || state.remainingBossHP === 0) && (
+          <button
+            onClick={() =>
+              dispatch({ type: 'reset_round', payload: state.questions })
+            }
+          >
+            Restart
+          </button>
+        )}
+      <h3>
+        boss HP: {state.remainingBossHP}/{state.bossHP}
+      </h3>
+      <h3>
+        your HP: {state.remainingPlayerHP}/{state.playerHP}
+      </h3>
       {state.roundStarted && <h2>{state.timeRemaining}</h2>}
       {state.roundStarted && !state.questions && (
         <p>Patience mortal, loading questions...</p>
@@ -160,12 +197,16 @@ export default function Boss({
           <p>{state.questions[state.currQuestionIdx].text}</p>
           <ul>
             {state.questions[state.currQuestionIdx].answers.map(
-              ({ text }, idx) => (
+              ({ text, correct }, idx) => (
                 <li key={text}>
                   <button
-                    onClick={() =>
-                      dispatch({ type: 'set_given_answer_idx', payload: idx })
-                    }
+                    onClick={() => {
+                      if (correct) {
+                        dispatch({ type: 'damage_boss', payload: idx });
+                      } else {
+                        dispatch({ type: 'damage_player', payload: idx });
+                      }
+                    }}
                     disabled={
                       state.givenAnswerIdx !== null || state.timeRemaining <= 0
                     }
