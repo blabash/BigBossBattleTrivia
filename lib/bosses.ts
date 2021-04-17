@@ -64,31 +64,39 @@ export async function getBossData(slug: string | string[]) {
   }
 }
 
-const bossQuestions = `query GetQuestionsByBossId($id: ID!) {
+const bossQuestions = `query GetQuestionsByBossId(
+  $id: ID!
+  $nextToken: String
+  $limit: Int
+) {
   getBoss(id: $id) {
-    questions {
+    questions(limit: $limit, nextToken: $nextToken) {
+      nextToken
       items {
+        text
         answers {
           correct
           text
         }
-        id
-        text
       }
     }
   }
 }`;
 
-export async function getBossQuestions(id: string) {
+export async function getBossQuestions(
+  id: string,
+  limit?: number,
+  nextToken?: string
+) {
   try {
     const response = (await API.graphql(
-      graphqlOperation(bossQuestions, { id })
+      graphqlOperation(bossQuestions, { id, limit, nextToken })
     )) as {
       data: GetBossQuery;
       error: {}[];
     };
-
-    return response.data.getBoss.questions.items;
+    console.log(response);
+    return response.data.getBoss.questions;
   } catch (error) {
     console.warn(error);
   }

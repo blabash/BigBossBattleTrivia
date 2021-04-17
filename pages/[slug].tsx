@@ -98,9 +98,9 @@ export default function Boss({
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      const questions = await getBossQuestions(bossData.id);
+      const questions = await getBossQuestions(bossData.id, 7);
       console.log(questions);
-      dispatch({ type: 'set_questions', payload: questions });
+      dispatch({ type: 'set_questions', payload: questions.items });
     };
 
     fetchQuestions();
