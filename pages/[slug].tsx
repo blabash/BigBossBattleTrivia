@@ -7,7 +7,8 @@ import Image from 'next/image';
 import { GetBossQuery } from '../src/API';
 
 type InitialState = {
-  questions: GetBossQuery['getBoss']['questions']['items'];
+  questionsBank: GetBossQuery['getBoss']['questions']['items'];
+  currentQuestions: GetBossQuery['getBoss']['questions']['items'];
   timeRemaining: number;
   currQuestionIdx: number;
   givenAnswerIdx: number | null;
@@ -18,9 +19,26 @@ type InitialState = {
   remainingBossHP: number;
 };
 
+const initialState = {
+  questionsBank: null,
+  currentQuestions: null,
+  timeRemaining: 5,
+  currQuestionIdx: 0,
+  givenAnswerIdx: null,
+  roundStarted: false,
+  playerHP: 3,
+  remainingPlayerHP: 3,
+  bossHP: 3,
+  remainingBossHP: 3,
+};
+
 type ACTIONTYPE =
   | {
-      type: 'set_questions';
+      type: 'set_questions_bank';
+      payload: GetBossQuery['getBoss']['questions']['items'];
+    }
+  | {
+      type: 'set_current_questions';
       payload: GetBossQuery['getBoss']['questions']['items'];
     }
   | { type: 'start_round' }
@@ -29,15 +47,16 @@ type ACTIONTYPE =
   | { type: 'next_question' }
   | {
       type: 'reset_round';
-      payload: GetBossQuery['getBoss']['questions']['items'];
     }
   | { type: 'damage_boss'; payload: number }
   | { type: 'damage_player'; payload: number };
 
 function reducer(state: InitialState, action: ACTIONTYPE) {
   switch (action.type) {
-    case 'set_questions':
-      return { ...state, questions: action.payload };
+    case 'set_questions_bank':
+      return { ...state, questionsBank: action.payload };
+    case 'set_current_questions':
+      return { ...state, currentQuestions: action.payload };
     case 'start_round':
       return { ...state, roundStarted: true };
     case 'end_round':
@@ -52,7 +71,17 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
         timeRemaining: 5,
       };
     case 'reset_round':
-      return init(action.payload);
+      return {
+        ...state,
+        timeRemaining: 5,
+        currQuestionIdx: 0,
+        givenAnswerIdx: null,
+        roundStarted: false,
+        playerHP: 3,
+        remainingPlayerHP: 3,
+        bossHP: 3,
+        remainingBossHP: 3,
+      };
     case 'damage_boss':
       return {
         ...state,
@@ -71,11 +100,10 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
   }
 }
 
-function init(
-  questions: GetBossQuery['getBoss']['questions']['items'] = null
-): InitialState {
+function init(): InitialState {
   return {
-    questions,
+    questionsBank: null,
+    currentQuestions: null,
     timeRemaining: 5,
     currQuestionIdx: 0,
     givenAnswerIdx: null,
@@ -90,21 +118,68 @@ function init(
 export default function Boss({
   bossData,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const [state, dispatch] = useReducer(reducer, undefined, init);
-
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const nextTokenRef = useRef<string | null>(null);
+  // console.log('nextTokenRef: ', nextTokenRef.current);
+  const numTimesQuestionsSet = useRef(0);
+  const alreadyPickedQuestions = useRef({});
+  const getRandomQuestions = (
+    questions: GetBossQuery['getBoss']['questions']['items']
+  ) => {
+    return Array.from({ length: 4 }, () => {
+      let randomIdx = Math.floor(Math.random() * 1000) % questions.length;
+      while (alreadyPickedQuestions.current[randomIdx] && randomIdx >= 0) {
+        randomIdx = Math.floor(Math.random() * 1000) % questions.length;
+        console.log('yo');
+      }
+      alreadyPickedQuestions.current[randomIdx] = true;
+      return questions[randomIdx];
+    });
+  };
   const timeRemainingId = useRef<number | null>(null);
   const clearTimeRemaining = () =>
     window.clearInterval(timeRemainingId.current);
 
   useEffect(() => {
-    const fetchQuestions = async () => {
-      const questions = await getBossQuestions(bossData.id, 7);
-      console.log(questions);
-      dispatch({ type: 'set_questions', payload: questions.items });
+    const setQuestions = async () => {
+      let randomQuestions: GetBossQuery['getBoss']['questions']['items'];
+      if (numTimesQuestionsSet.current === 0) {
+        alreadyPickedQuestions.current = {};
+
+        let res: {
+          items: GetBossQuery['getBoss']['questions']['items'];
+          nextToken?: string;
+        };
+        res = await getBossQuestions(bossData.id, 12, nextTokenRef.current);
+        if (res.items.length < 12) {
+          res = await getBossQuestions(bossData.id, 12);
+        }
+
+        const { items: questions, nextToken } = res;
+
+        console.log('nextToken: ', nextToken);
+        nextTokenRef.current = nextToken;
+        console.log('fetched questions: ', questions);
+        dispatch({ type: 'set_questions_bank', payload: questions });
+
+        randomQuestions = getRandomQuestions(questions);
+        console.log('randomly chosen questions after fetch: ', randomQuestions);
+        // dispatch({ type: 'set_current_questions', payload: randomQuestions });
+      } else {
+        randomQuestions = getRandomQuestions(state.questionsBank);
+        console.log('randomly chosen questions: ', randomQuestions);
+      }
+      dispatch({ type: 'set_current_questions', payload: randomQuestions });
+      numTimesQuestionsSet.current =
+        numTimesQuestionsSet.current === 2
+          ? 0
+          : numTimesQuestionsSet.current + 1;
     };
 
-    fetchQuestions();
-  }, []);
+    if (state.roundStarted === false) {
+      setQuestions();
+    }
+  }, [state.roundStarted]);
 
   useEffect(() => {
     if (state.roundStarted === true || state.currQuestionIdx) {
@@ -169,11 +244,7 @@ export default function Boss({
         )}
       {!state.roundStarted &&
         (state.remainingPlayerHP === 0 || state.remainingBossHP === 0) && (
-          <button
-            onClick={() =>
-              dispatch({ type: 'reset_round', payload: state.questions })
-            }
-          >
+          <button onClick={() => dispatch({ type: 'reset_round' })}>
             Restart
           </button>
         )}
@@ -184,14 +255,14 @@ export default function Boss({
         your HP: {state.remainingPlayerHP}/{state.playerHP}
       </h3>
       {state.roundStarted && <h2>{state.timeRemaining}</h2>}
-      {state.roundStarted && !state.questions && (
+      {state.roundStarted && !state.currentQuestions && (
         <p>Patience mortal, loading questions...</p>
       )}
-      {state.roundStarted && state.questions && (
+      {state.roundStarted && state.currentQuestions && (
         <div>
-          <p>{state.questions[state.currQuestionIdx].text}</p>
+          <p>{state.currentQuestions[state.currQuestionIdx].text}</p>
           <ul>
-            {state.questions[state.currQuestionIdx].answers.map(
+            {state.currentQuestions[state.currQuestionIdx].answers.map(
               ({ text, correct }, idx) => (
                 <li key={text}>
                   <button
@@ -216,7 +287,7 @@ export default function Boss({
             <p>
               you said:{' '}
               {
-                state.questions[state.currQuestionIdx].answers[
+                state.currentQuestions[state.currQuestionIdx].answers[
                   state.givenAnswerIdx
                 ].text
               }

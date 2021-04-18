@@ -95,7 +95,6 @@ export async function getBossQuestions(
       data: GetBossQuery;
       error: {}[];
     };
-    console.log(response);
     return response.data.getBoss.questions;
   } catch (error) {
     console.warn(error);
