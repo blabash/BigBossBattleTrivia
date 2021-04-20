@@ -100,6 +100,27 @@ export type DeleteQuestionInput = {
   id?: string | null;
 };
 
+export type CreateSessionInput = {
+  id?: string | null;
+  seenQuestions?: string | null;
+};
+
+export type ModelSessionConditionInput = {
+  seenQuestions?: ModelStringInput | null;
+  and?: Array<ModelSessionConditionInput | null> | null;
+  or?: Array<ModelSessionConditionInput | null> | null;
+  not?: ModelSessionConditionInput | null;
+};
+
+export type UpdateSessionInput = {
+  id: string;
+  seenQuestions?: string | null;
+};
+
+export type DeleteSessionInput = {
+  id?: string | null;
+};
+
 export type ModelBossFilterInput = {
   id?: ModelIDInput | null;
   name?: ModelStringInput | null;
@@ -133,6 +154,14 @@ export type ModelQuestionFilterInput = {
   and?: Array<ModelQuestionFilterInput | null> | null;
   or?: Array<ModelQuestionFilterInput | null> | null;
   not?: ModelQuestionFilterInput | null;
+};
+
+export type ModelSessionFilterInput = {
+  id?: ModelIDInput | null;
+  seenQuestions?: ModelStringInput | null;
+  and?: Array<ModelSessionFilterInput | null> | null;
+  or?: Array<ModelSessionFilterInput | null> | null;
+  not?: ModelSessionFilterInput | null;
 };
 
 export type CreateBossMutationVariables = {
@@ -300,6 +329,45 @@ export type DeleteQuestionMutation = {
   } | null;
 };
 
+export type CreateSessionMutationVariables = {
+  input: CreateSessionInput;
+  condition?: ModelSessionConditionInput | null;
+};
+
+export type CreateSessionMutation = {
+  createSession: {
+    __typename: 'Session';
+    id: string;
+    seenQuestions: string | null;
+  } | null;
+};
+
+export type UpdateSessionMutationVariables = {
+  input: UpdateSessionInput;
+  condition?: ModelSessionConditionInput | null;
+};
+
+export type UpdateSessionMutation = {
+  updateSession: {
+    __typename: 'Session';
+    id: string;
+    seenQuestions: string | null;
+  } | null;
+};
+
+export type DeleteSessionMutationVariables = {
+  input: DeleteSessionInput;
+  condition?: ModelSessionConditionInput | null;
+};
+
+export type DeleteSessionMutation = {
+  deleteSession: {
+    __typename: 'Session';
+    id: string;
+    seenQuestions: string | null;
+  } | null;
+};
+
 export type GetBossQueryVariables = {
   id: string;
 };
@@ -318,7 +386,11 @@ export type GetBossQuery = {
         __typename: 'Question';
         id: string;
         text: string;
-        answers: { correct: boolean; text: string }[];
+        answers: Array<{
+          __typename: 'Answer';
+          text: string;
+          correct: boolean;
+        }>;
       } | null> | null;
       nextToken: string | null;
     } | null;
@@ -405,6 +477,36 @@ export type ListQuestionsQuery = {
         text: string;
         correct: boolean;
       }>;
+    } | null> | null;
+    nextToken: string | null;
+  } | null;
+};
+
+export type GetSessionQueryVariables = {
+  id: string;
+};
+
+export type GetSessionQuery = {
+  getSession: {
+    __typename: 'Session';
+    id: string;
+    seenQuestions: string | null;
+  } | null;
+};
+
+export type ListSessionsQueryVariables = {
+  filter?: ModelSessionFilterInput | null;
+  limit?: number | null;
+  nextToken?: string | null;
+};
+
+export type ListSessionsQuery = {
+  listSessions: {
+    __typename: 'ModelSessionConnection';
+    items: Array<{
+      __typename: 'Session';
+      id: string;
+      seenQuestions: string | null;
     } | null> | null;
     nextToken: string | null;
   } | null;
@@ -542,5 +644,29 @@ export type OnDeleteQuestionSubscription = {
       text: string;
       correct: boolean;
     }>;
+  } | null;
+};
+
+export type OnCreateSessionSubscription = {
+  onCreateSession: {
+    __typename: 'Session';
+    id: string;
+    seenQuestions: string | null;
+  } | null;
+};
+
+export type OnUpdateSessionSubscription = {
+  onUpdateSession: {
+    __typename: 'Session';
+    id: string;
+    seenQuestions: string | null;
+  } | null;
+};
+
+export type OnDeleteSessionSubscription = {
+  onDeleteSession: {
+    __typename: 'Session';
+    id: string;
+    seenQuestions: string | null;
   } | null;
 };

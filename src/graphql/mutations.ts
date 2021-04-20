@@ -133,3 +133,33 @@ export const deleteQuestion = `mutation DeleteQuestion(
   }
 }
 `;
+export const createSession = `mutation CreateSession(
+  $input: CreateSessionInput!
+  $condition: ModelSessionConditionInput
+) {
+  createSession(input: $input, condition: $condition) {
+    id
+    seenQuestions
+  }
+}
+`;
+export const updateSession = `mutation UpdateSession(
+  $input: UpdateSessionInput!
+  $condition: ModelSessionConditionInput
+) {
+  updateSession(input: $input, condition: $condition) {
+    id
+    seenQuestions
+  }
+}
+`;
+export const deleteSession = `mutation DeleteSession(
+  $input: DeleteSessionInput!
+  $condition: ModelSessionConditionInput
+) {
+  deleteSession(input: $input, condition: $condition) {
+    id
+    seenQuestions
+  }
+}
+`;

@@ -115,3 +115,24 @@ export const onDeleteQuestion = `subscription OnDeleteQuestion {
   }
 }
 `;
+export const onCreateSession = `subscription OnCreateSession {
+  onCreateSession {
+    id
+    seenQuestions
+  }
+}
+`;
+export const onUpdateSession = `subscription OnUpdateSession {
+  onUpdateSession {
+    id
+    seenQuestions
+  }
+}
+`;
+export const onDeleteSession = `subscription OnDeleteSession {
+  onDeleteSession {
+    id
+    seenQuestions
+  }
+}
+`;

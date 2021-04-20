@@ -120,7 +120,6 @@ export default function Boss({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const nextTokenRef = useRef<string | null>(null);
-  // console.log('nextTokenRef: ', nextTokenRef.current);
   const numTimesQuestionsSet = useRef(0);
   const alreadyPickedQuestions = useRef({});
   const getRandomQuestions = (
@@ -130,7 +129,7 @@ export default function Boss({
       let randomIdx = Math.floor(Math.random() * 1000) % questions.length;
       while (alreadyPickedQuestions.current[randomIdx] && randomIdx >= 0) {
         randomIdx = Math.floor(Math.random() * 1000) % questions.length;
-        console.log('yo');
+        console.log('infinite?');
       }
       alreadyPickedQuestions.current[randomIdx] = true;
       return questions[randomIdx];

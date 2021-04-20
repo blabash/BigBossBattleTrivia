@@ -16,3 +16,7 @@ type Answer {
   text: String!
   correct: Boolean!
 }
+type Session @model {
+  id: ID!
+  seenQuestions: AWSJSON
+}

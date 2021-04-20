@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-amplify": "^3.3.26",
+    "aws-sdk": "^2.888.0",
     "nanoid": "^3.1.22",
     "next": "^10.1.2",
     "react": "^17.0.2",

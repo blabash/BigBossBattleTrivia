@@ -1,13 +1,16 @@
 import API, { graphqlOperation } from '@aws-amplify/api-graphql';
+import awsExports from '../src/aws-exports';
+API.configure(awsExports);
 import {
   ListBosssQuery,
   GetBossQuery,
   GetQuestionQuery,
   ListQuestionsQuery,
+  CreateSessionMutation,
+  CreateBossInput,
 } from '../src/API';
-import awsExports from '../src/aws-exports';
 import { getBoss, listBosss, listQuestions } from '../src/graphql/queries';
-API.configure(awsExports);
+import { createSession } from '../src/graphql/mutations';
 
 export async function getBossesData() {
   try {
@@ -96,6 +99,20 @@ export async function getBossQuestions(
       error: {}[];
     };
     return response.data.getBoss.questions;
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
+export async function createSessionId() {
+  try {
+    const response = (await API.graphql(
+      graphqlOperation(createSession, { input: {} })
+    )) as {
+      data: CreateSessionMutation;
+      error: {}[];
+    };
+    return response.data.createSession.id;
   } catch (error) {
     console.warn(error);
   }

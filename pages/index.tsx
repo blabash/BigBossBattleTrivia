@@ -1,9 +1,11 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { ListBosssQuery } from '../src/API';
 import Image from 'next/image';
 import Head from 'next/head';
 import Link from 'next/link';
 import { getBossesData } from '../lib/bosses';
+import useLocalStorage from '../hooks/useLocalStorage';
+import { createSessionId } from '../lib/bosses';
 
 type Props = {
   bosses: ListBosssQuery['listBosss']['items'];
@@ -12,6 +14,27 @@ type Props = {
 const ROUTE_BOSS_SLUG = '/[slug]';
 
 const StartScreen = ({ bosses }: Props) => {
+  const [sessionId, setSessionId] = useLocalStorage<string>('sessionId', null);
+  console.log('sessionId: ', sessionId);
+
+  useEffect(() => {
+    async function setupSession(session: string | null) {
+      if (!session) {
+        const sessionId = await createSessionId();
+        if (!sessionId) {
+          console.warn(
+            'Could not fetch a sessionId! May see repeat questions.'
+          );
+          return;
+        }
+        console.log('fetched sessionId: ', sessionId);
+        setSessionId(sessionId);
+      }
+    }
+
+    setupSession(sessionId);
+  }, []);
+
   return (
     <>
       <Head>

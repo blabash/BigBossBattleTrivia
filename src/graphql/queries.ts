@@ -84,3 +84,24 @@ export const listQuestions = `query ListQuestions(
   }
 }
 `;
+export const getSession = `query GetSession($id: ID!) {
+  getSession(id: $id) {
+    id
+    seenQuestions
+  }
+}
+`;
+export const listSessions = `query ListSessions(
+  $filter: ModelSessionFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listSessions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      seenQuestions
+    }
+    nextToken
+  }
+}
+`;
