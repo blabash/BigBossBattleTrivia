@@ -4,7 +4,7 @@ import { getBossData, getBossSlugs, getBossQuestions } from '../lib/bosses';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import { GetBossQuery } from '../src/API';
+import { CreateSessionMutation, GetBossQuery } from '../src/API';
 
 type InitialState = {
   questionsBank: GetBossQuery['getBoss']['questions']['items'];
@@ -115,9 +115,12 @@ function init(): InitialState {
   };
 }
 
-export default function Boss({
-  bossData,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+interface Props extends InferGetStaticPropsType<typeof getStaticProps> {
+  sessionId: CreateSessionMutation['createSession']['id'];
+}
+
+export default function Boss({ bossData, sessionId }: Props) {
+  console.log('in slug', sessionId);
   const [state, dispatch] = useReducer(reducer, initialState);
   const nextTokenRef = useRef<string | null>(null);
   const numTimesQuestionsSet = useRef(0);
