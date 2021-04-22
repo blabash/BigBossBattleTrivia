@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/aws-lambda": "^8.10.75",
     "aws-amplify": "^3.3.26",
     "aws-sdk": "^2.888.0",
     "nanoid": "^3.1.22",
