@@ -1,0 +1,6 @@
+{
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"sessionId\":\"6975cf0a-5c90-49d2-a20e-a7f4def9f0fe\",\"bossId\":\"be6eac33-15dd-4288-96ed-04a1ced2a3b0\"}"
+}
