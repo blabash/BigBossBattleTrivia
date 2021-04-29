@@ -1,6 +1,11 @@
 import Link from 'next/link';
 import React, { useEffect, useRef, useReducer } from 'react';
-import { getBossData, getBossSlugs, getBossQuestions } from '../lib/bosses';
+import {
+  getBossData,
+  getBossSlugs,
+  getBossQuestions,
+  getBossQuestion,
+} from '../lib/bosses';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -145,6 +150,8 @@ export default function Boss({ bossData, sessionId }: Props) {
   useEffect(() => {
     const setQuestions = async () => {
       let randomQuestions: GetBossQuery['getBoss']['questions']['items'];
+      const derp = await getBossQuestion(sessionId, bossData.id);
+      console.log(`derp`, derp);
       if (numTimesQuestionsSet.current === 0) {
         alreadyPickedQuestions.current = {};
 

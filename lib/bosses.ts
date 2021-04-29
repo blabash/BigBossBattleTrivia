@@ -4,12 +4,11 @@ API.configure(awsExports);
 import {
   ListBosssQuery,
   GetBossQuery,
-  GetQuestionQuery,
-  ListQuestionsQuery,
   CreateSessionMutation,
-  CreateBossInput,
+  GetQuestionQuery,
 } from '../src/API';
-import { getBoss, listBosss, listQuestions } from '../src/graphql/queries';
+import endpoints from '../endpoints';
+import { listBosss } from '../src/graphql/queries';
 import { createSession } from '../src/graphql/mutations';
 
 export async function getBossesData() {
@@ -116,4 +115,23 @@ export async function createSessionId() {
   } catch (error) {
     console.warn(error);
   }
+}
+
+export async function getBossQuestion(sessionId: string, bossId: string) {
+  const data = {
+    sessionId,
+    bossId,
+  };
+  const res = await fetch(endpoints.getBossQuestionUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  return (await res.json()) as {
+    question: Omit<GetQuestionQuery['getQuestion'], 'boss'>;
+    error?: string;
+  };
 }

@@ -12,8 +12,6 @@ const getBossQuestion: ValidatedEventAPIGatewayProxyEvent<
 > = async (event, context) => {
   const bossId = event.body.bossId;
   const sessionId = event.body.sessionId;
-  console.log(`bossId`, bossId);
-  console.log(`sessionId`, sessionId);
 
   const questionParams = {
     TableName: 'Question-zvmlbr6ejzh4xfqcfjgso77a5e-dev',
@@ -34,11 +32,8 @@ const getBossQuestion: ValidatedEventAPIGatewayProxyEvent<
   const sessionPromise = ddb.get(sessionParams).promise();
 
   try {
-    // const { Items: bossQuestions } = await questionsPromise;
-    // const { Item: session } = await sessionPromise;
     const { Items } = await questionsPromise;
     const { Item } = await sessionPromise;
-    console.log(`Item`, Item);
     const bossQuestions = Items as ListQuestionsQuery['listQuestions']['items'];
     const session = Item as {
       __typename: 'Session';
@@ -111,8 +106,8 @@ const getBossQuestion: ValidatedEventAPIGatewayProxyEvent<
     return {
       statusCode: 500,
       body: JSON.stringify({
-        Error: error.message,
-        Reference: context.awsRequestId,
+        error: error.message,
+        reference: context.awsRequestId,
       }),
       headers: {
         'Access-Control-Allow-Origin': '*',
