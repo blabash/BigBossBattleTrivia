@@ -7,11 +7,51 @@ import { middyfy } from '@libs/lambda';
 
 import schema from './schema';
 
-const getBossQuestion: ValidatedEventAPIGatewayProxyEvent<
+type SeenQuestions = {
+  [key: string]: { [key: string]: true };
+} | null;
+
+type BossQuestions = ListQuestionsQuery['listQuestions']['items'];
+
+interface QuestionsAndIds {
+  newQuestionIds: { [key: string]: true };
+  newQuestions: BossQuestions;
+}
+
+function grabNewQuestionsAndTheirIds(
+  bossQuestions: BossQuestions,
+  seenQuestionsForBoss: { [key: string]: true },
+  numQuestionsForRound: number
+): QuestionsAndIds {
+  const newQuestionIds: { [key: string]: true } = {};
+  let newQuestions: typeof bossQuestions = [];
+  for (let i = 0; i < numQuestionsForRound; i++) {
+    let randomIdx = Math.floor(Math.random() * 1000) % bossQuestions.length;
+    let randomQuestionId = bossQuestions[randomIdx].id;
+
+    while (
+      (seenQuestionsForBoss[randomQuestionId] ||
+        newQuestionIds[randomQuestionId]) &&
+      !isNaN(randomIdx)
+    ) {
+      randomIdx = Math.floor(Math.random() * 1000) % bossQuestions.length;
+      randomQuestionId = bossQuestions[randomIdx].id;
+      console.log('infinite loop?');
+    }
+
+    newQuestionIds[randomQuestionId] = true;
+    newQuestions = newQuestions.concat(bossQuestions[randomIdx]);
+  }
+  console.log(`newQuestions`, newQuestions);
+  return { newQuestionIds, newQuestions };
+}
+
+const getBossQuestions: ValidatedEventAPIGatewayProxyEvent<
   typeof schema
 > = async (event, context) => {
   const bossId = event.body.bossId;
   const sessionId = event.body.sessionId;
+  const numQuestionsForRound = event.body.numQuestionsForRound;
 
   const questionParams = {
     TableName: 'Question-zvmlbr6ejzh4xfqcfjgso77a5e-dev',
@@ -34,11 +74,11 @@ const getBossQuestion: ValidatedEventAPIGatewayProxyEvent<
   try {
     const { Items } = await questionsPromise;
     const { Item } = await sessionPromise;
-    const bossQuestions = Items as ListQuestionsQuery['listQuestions']['items'];
+    const bossQuestions = Items as BossQuestions;
     const session = Item as {
       __typename: 'Session';
       id: string;
-      seenQuestions: { [key: string]: { [key: string]: boolean } } | null;
+      seenQuestions: SeenQuestions;
     };
 
     if (!bossQuestions.length || !session) {
@@ -53,32 +93,32 @@ const getBossQuestion: ValidatedEventAPIGatewayProxyEvent<
       };
     }
 
+    //initialize seenQuestions for this session
     let seenQuestions = session.seenQuestions || {
       [bossId]: {},
     };
 
-    const bossQuestionsLength = bossQuestions.length;
-
-    if (bossQuestionsLength === Object.keys(seenQuestions[bossId]).length) {
+    const totalBossQuestions = bossQuestions.length;
+    const numSeenQuestions = Object.keys(seenQuestions[bossId]).length;
+    //check if player will see more than total available questions for this boss
+    if (numSeenQuestions + numQuestionsForRound > totalBossQuestions) {
       seenQuestions = {
         ...seenQuestions,
-        [bossId]: {},
+        [bossId]: {}, //reset questions for this boss
       };
     }
 
-    let randomIdx = Math.floor(Math.random() * 1000) % bossQuestionsLength;
-    let randomQuestionId = bossQuestions[randomIdx].id;
-    while (seenQuestions[bossId][randomQuestionId] && !isNaN(randomIdx)) {
-      randomIdx = Math.floor(Math.random() * 1000) % bossQuestionsLength;
-      randomQuestionId = bossQuestions[randomIdx].id;
-      console.log('infinite loop?');
-    }
+    const { newQuestions, newQuestionIds } = grabNewQuestionsAndTheirIds(
+      bossQuestions,
+      seenQuestions[bossId],
+      numQuestionsForRound
+    );
 
     const updatedSeenQuestions = {
       ...seenQuestions,
       [bossId]: {
         ...seenQuestions[bossId],
-        [randomQuestionId]: true,
+        ...newQuestionIds,
       },
     };
     const updatedSessionParams = {
@@ -93,9 +133,7 @@ const getBossQuestion: ValidatedEventAPIGatewayProxyEvent<
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        question: bossQuestions[randomIdx],
-      }),
+      body: JSON.stringify({ newQuestions }),
       headers: {
         'Access-Control-Allow-Origin': '*',
       },
@@ -116,4 +154,4 @@ const getBossQuestion: ValidatedEventAPIGatewayProxyEvent<
   }
 };
 
-export const main = middyfy(getBossQuestion);
+export const main = middyfy(getBossQuestions);

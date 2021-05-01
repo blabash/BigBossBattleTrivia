@@ -7,7 +7,7 @@ export default {
     {
       http: {
         method: 'post',
-        path: 'get-boss-question',
+        path: 'get-boss-questions',
         cors: true,
         request: {
           schema: {

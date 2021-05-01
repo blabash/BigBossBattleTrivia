@@ -3,6 +3,7 @@ export default {
   properties: {
     bossId: { type: 'string' },
     sessionId: { type: 'string' },
+    numQuestionsForRound: { type: 'number' },
   },
-  required: ['bossId', 'sessionId'],
+  required: ['bossId', 'sessionId', 'numQuestionsForRound'],
 } as const;

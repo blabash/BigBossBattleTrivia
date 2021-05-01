@@ -1,7 +1,7 @@
 import type { AWS } from '@serverless/typescript';
 
 import hello from '@functions/hello';
-import getBossQuestion from '@functions/getBossQuestion';
+import getBossQuestions from '@functions/getBossQuestions';
 
 const serverlessConfiguration: AWS = {
   service: 'bbbtservice',
@@ -42,7 +42,7 @@ const serverlessConfiguration: AWS = {
     ],
   },
   // import the function via paths
-  functions: { hello, getBossQuestion },
+  functions: { hello, getBossQuestions },
 };
 
 module.exports = serverlessConfiguration;
