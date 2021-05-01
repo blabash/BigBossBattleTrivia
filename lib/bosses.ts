@@ -118,20 +118,20 @@ export async function createSessionId() {
 }
 
 export async function getBossQuestion(sessionId: string, bossId: string) {
-  const data = {
+  const body = {
     sessionId,
     bossId,
   };
-  const res = await fetch(endpoints.getBossQuestionUrl, {
+  const response = await fetch(endpoints.getBossQuestionUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(body),
   });
 
-  return (await res.json()) as {
-    question: Omit<GetQuestionQuery['getQuestion'], 'boss'>;
+  return (await response.json()) as {
+    question?: Omit<GetQuestionQuery['getQuestion'], 'boss'>;
     error?: string;
   };
 }

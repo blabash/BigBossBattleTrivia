@@ -37,7 +37,7 @@ const serverlessConfiguration: AWS = {
           'dynamodb:UpdateItem',
           'dynamodb:DeleteItem',
         ],
-        Resource: ['${opt:questionTableWithGsiArn}', '${opt:sessionTableArn}'],
+        Resource: 'arn:aws:dynamodb:us-west-2:*:*',
       },
     ],
   },
