@@ -16,5 +16,22 @@
 				}
 			}
 		}
+	},
+	"function": {
+		"getRandomQuestions": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "api",
+					"resourceName": "bigbossbattletrivia",
+					"attributes": [
+						"GraphQLAPIIdOutput",
+						"GraphQLAPIEndpointOutput"
+					]
+				}
+			]
+		}
 	}
 }

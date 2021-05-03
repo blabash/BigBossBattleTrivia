@@ -20,3 +20,20 @@ type Session @model {
   id: ID!
   seenQuestions: AWSJSON
 }
+input GetRandomQuestionsInput {
+  bossId: String!
+  sessionId: String!
+  numQuestionsForRound: Int!
+}
+type DdbQuestion {
+  updatedAt: String
+  createdAt: String
+  answers: [Answer]
+  text: String
+  id: String
+  questionBossId: String
+}
+type Mutation {
+  getRandomQuestions(input: GetRandomQuestionsInput): [DdbQuestion]
+    @function(name: "getRandomQuestions-${env}")
+}

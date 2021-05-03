@@ -1,6 +1,12 @@
 /* tslint:disable */
 //  This file was automatically generated and should not be edited.
 
+export type GetRandomQuestionsInput = {
+  bossId: string;
+  sessionId: string;
+  numQuestionsForRound: number;
+};
+
 export type CreateBossInput = {
   id?: string | null;
   name: string;
@@ -162,6 +168,26 @@ export type ModelSessionFilterInput = {
   and?: Array<ModelSessionFilterInput | null> | null;
   or?: Array<ModelSessionFilterInput | null> | null;
   not?: ModelSessionFilterInput | null;
+};
+
+export type GetRandomQuestionsMutationVariables = {
+  input?: GetRandomQuestionsInput | null;
+};
+
+export type GetRandomQuestionsMutation = {
+  getRandomQuestions: Array<{
+    __typename: 'DdbQuestion';
+    updatedAt: string | null;
+    createdAt: string | null;
+    answers: Array<{
+      __typename: 'Answer';
+      text: string;
+      correct: boolean;
+    } | null> | null;
+    text: string | null;
+    id: string | null;
+    questionBossId: string | null;
+  } | null> | null;
 };
 
 export type CreateBossMutationVariables = {

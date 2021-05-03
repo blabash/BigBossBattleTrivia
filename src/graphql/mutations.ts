@@ -1,6 +1,20 @@
 // tslint:disable
 // this is an auto generated file. This will be overwritten
 
+export const getRandomQuestions = `mutation GetRandomQuestions($input: GetRandomQuestionsInput) {
+  getRandomQuestions(input: $input) {
+    updatedAt
+    createdAt
+    answers {
+      text
+      correct
+    }
+    text
+    id
+    questionBossId
+  }
+}
+`;
 export const createBoss = `mutation CreateBoss(
   $input: CreateBossInput!
   $condition: ModelBossConditionInput
