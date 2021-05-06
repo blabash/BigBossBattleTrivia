@@ -7,7 +7,6 @@ import {
   CreateSessionMutation,
   GetQuestionQuery,
 } from '../src/API';
-import endpoints from '../endpoints';
 import { listBosss } from '../src/graphql/queries';
 import { createSession } from '../src/graphql/mutations';
 
@@ -117,21 +116,4 @@ export async function createSessionId() {
   }
 }
 
-export async function getBossQuestion(sessionId: string, bossId: string) {
-  const body = {
-    sessionId,
-    bossId,
-  };
-  const response = await fetch(endpoints.getBossQuestionUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-
-  return (await response.json()) as {
-    question?: Omit<GetQuestionQuery['getQuestion'], 'boss'>;
-    error?: string;
-  };
-}
+export async function getRandomQuestions(sessionId: string, bossId: string) {}
