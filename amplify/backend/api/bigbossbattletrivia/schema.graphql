@@ -21,10 +21,24 @@ type Session @model {
   seenQuestions: AWSJSON
 }
 input GetRandomQuestionsInput {
-  bossId: String!
-  sessionId: String!
+  bossId: ID!
+  sessionId: ID!
   numQuestionsForRound: Int!
 }
+# type DdbQuestion {
+#   updatedAt: String
+#   createdAt: String
+#   answers: [Answer]
+#   text: String
+#   id: String
+#   questionBossId: String
+# }
+
+type DdbError {
+  statusCode: Int
+  error: String
+}
+
 type DdbQuestion {
   updatedAt: String
   createdAt: String
@@ -33,7 +47,14 @@ type DdbQuestion {
   id: String
   questionBossId: String
 }
+
+type NewQuestions {
+  newQuestions: [DdbQuestion]
+}
+
+union GetRandomQuestionsResult = DdbError | NewQuestions
+
 type Mutation {
-  getRandomQuestions(input: GetRandomQuestionsInput): [DdbQuestion]
+  getRandomQuestions(input: GetRandomQuestionsInput): GetRandomQuestionsResult
     @function(name: "getRandomQuestions-${env}")
 }

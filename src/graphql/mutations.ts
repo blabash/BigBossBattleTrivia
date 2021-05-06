@@ -3,15 +3,23 @@
 
 export const getRandomQuestions = `mutation GetRandomQuestions($input: GetRandomQuestionsInput) {
   getRandomQuestions(input: $input) {
-    updatedAt
-    createdAt
-    answers {
-      text
-      correct
+    ... on DdbError {
+      statusCode
+      error
     }
-    text
-    id
-    questionBossId
+    ... on NewQuestions {
+      newQuestions {
+        updatedAt
+        createdAt
+        answers {
+          text
+          correct
+        }
+        text
+        id
+        questionBossId
+      }
+    }
   }
 }
 `;
