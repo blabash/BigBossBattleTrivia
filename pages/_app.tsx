@@ -21,7 +21,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         setSessionId(sessionId);
       }
     }
-
     setupSession(sessionId);
   }, []);
   return <Component sessionId={sessionId} {...pageProps} />;
