@@ -1,19 +1,27 @@
 import Link from 'next/link';
-import React, { useEffect, useRef, useReducer } from 'react';
-import {
-  getBossData,
-  getBossSlugs,
-  getBossQuestions,
-  getBossQuestion,
-} from '../lib/bosses';
+import React, { useEffect, useRef, useReducer, useState } from 'react';
+import { getBossData, getBossSlugs, getNewQuestions } from '../lib/bosses';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import { CreateSessionMutation, GetBossQuery } from '../src/API';
+import { CreateSessionMutation } from '../src/API';
+
+type Questions = Array<{
+  __typename: string;
+  updatedAt: string | null;
+  createdAt: string | null;
+  answers: Array<{
+    __typename: string;
+    text: string;
+    correct: boolean;
+  } | null> | null;
+  text: string | null;
+  id: string | null;
+  questionBossId: string | null;
+} | null> | null;
 
 type InitialState = {
-  questionsBank: GetBossQuery['getBoss']['questions']['items'];
-  currentQuestions: GetBossQuery['getBoss']['questions']['items'];
+  currentQuestions: Questions;
   timeRemaining: number;
   currQuestionIdx: number;
   givenAnswerIdx: number | null;
@@ -39,12 +47,8 @@ const initialState = {
 
 type ACTIONTYPE =
   | {
-      type: 'set_questions_bank';
-      payload: GetBossQuery['getBoss']['questions']['items'];
-    }
-  | {
       type: 'set_current_questions';
-      payload: GetBossQuery['getBoss']['questions']['items'];
+      payload: Questions;
     }
   | { type: 'start_round' }
   | { type: 'end_round' }
@@ -58,8 +62,6 @@ type ACTIONTYPE =
 
 function reducer(state: InitialState, action: ACTIONTYPE) {
   switch (action.type) {
-    case 'set_questions_bank':
-      return { ...state, questionsBank: action.payload };
     case 'set_current_questions':
       return { ...state, currentQuestions: action.payload };
     case 'start_round':
@@ -107,7 +109,6 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
 
 function init(): InitialState {
   return {
-    questionsBank: null,
     currentQuestions: null,
     timeRemaining: 5,
     currQuestionIdx: 0,
@@ -125,64 +126,22 @@ interface Props extends InferGetStaticPropsType<typeof getStaticProps> {
 }
 
 export default function Boss({ bossData, sessionId }: Props) {
-  console.log('in slug', sessionId);
   const [state, dispatch] = useReducer(reducer, initialState);
-  const nextTokenRef = useRef<string | null>(null);
-  const numTimesQuestionsSet = useRef(0);
-  const alreadyPickedQuestions = useRef({});
-  const getRandomQuestions = (
-    questions: GetBossQuery['getBoss']['questions']['items']
-  ) => {
-    return Array.from({ length: 4 }, () => {
-      let randomIdx = Math.floor(Math.random() * 1000) % questions.length;
-      while (alreadyPickedQuestions.current[randomIdx] && randomIdx >= 0) {
-        randomIdx = Math.floor(Math.random() * 1000) % questions.length;
-        console.log('infinite?');
-      }
-      alreadyPickedQuestions.current[randomIdx] = true;
-      return questions[randomIdx];
-    });
-  };
+  const [error, setError] = useState<string | null>(null);
+
   const timeRemainingId = useRef<number | null>(null);
   const clearTimeRemaining = () =>
     window.clearInterval(timeRemainingId.current);
 
   useEffect(() => {
-    const setQuestions = async () => {
-      let randomQuestions: GetBossQuery['getBoss']['questions']['items'];
-      const derp = await getBossQuestion(sessionId, bossData.id);
-      console.log(`derp`, derp);
-      if (numTimesQuestionsSet.current === 0) {
-        alreadyPickedQuestions.current = {};
-
-        let res: {
-          items: GetBossQuery['getBoss']['questions']['items'];
-          nextToken?: string;
-        };
-        res = await getBossQuestions(bossData.id, 12, nextTokenRef.current);
-        if (res.items.length < 12) {
-          res = await getBossQuestions(bossData.id, 12);
-        }
-
-        const { items: questions, nextToken } = res;
-
-        console.log('nextToken: ', nextToken);
-        nextTokenRef.current = nextToken;
-        console.log('fetched questions: ', questions);
-        dispatch({ type: 'set_questions_bank', payload: questions });
-
-        randomQuestions = getRandomQuestions(questions);
-        console.log('randomly chosen questions after fetch: ', randomQuestions);
-        // dispatch({ type: 'set_current_questions', payload: randomQuestions });
+    const setQuestions = async (): Promise<void> => {
+      const res = await getNewQuestions(sessionId, bossData.id, 8);
+      console.log(`res`, res);
+      if (res.__typename === 'DdbError') {
+        setError(res.error);
       } else {
-        randomQuestions = getRandomQuestions(state.questionsBank);
-        console.log('randomly chosen questions: ', randomQuestions);
+        dispatch({ type: 'set_current_questions', payload: res.newQuestions });
       }
-      dispatch({ type: 'set_current_questions', payload: randomQuestions });
-      numTimesQuestionsSet.current =
-        numTimesQuestionsSet.current === 2
-          ? 0
-          : numTimesQuestionsSet.current + 1;
     };
 
     if (state.roundStarted === false) {
@@ -272,7 +231,7 @@ export default function Boss({ bossData, sessionId }: Props) {
           <p>{state.currentQuestions[state.currQuestionIdx].text}</p>
           <ul>
             {state.currentQuestions[state.currQuestionIdx].answers.map(
-              ({ text, correct }, idx) => (
+              ({ text, correct }, idx: number) => (
                 <li key={text}>
                   <button
                     onClick={() => {

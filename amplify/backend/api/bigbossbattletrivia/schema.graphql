@@ -6,33 +6,29 @@ type Boss @model {
   background: String
   questions: [Question] @connection(name: "BossQuestions")
 }
+
 type Question @model {
   id: ID!
   text: String!
   boss: Boss! @connection(name: "BossQuestions")
   answers: [Answer!]!
 }
+
 type Answer {
   text: String!
   correct: Boolean!
 }
+
 type Session @model {
   id: ID!
   seenQuestions: AWSJSON
 }
+
 input GetRandomQuestionsInput {
   bossId: ID!
   sessionId: ID!
   numQuestionsForRound: Int!
 }
-# type DdbQuestion {
-#   updatedAt: String
-#   createdAt: String
-#   answers: [Answer]
-#   text: String
-#   id: String
-#   questionBossId: String
-# }
 
 type DdbError {
   statusCode: Int

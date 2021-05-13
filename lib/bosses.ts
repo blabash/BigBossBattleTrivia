@@ -3,12 +3,11 @@ import awsExports from '../src/aws-exports';
 API.configure(awsExports);
 import {
   ListBosssQuery,
-  GetBossQuery,
   CreateSessionMutation,
-  GetQuestionQuery,
+  GetRandomQuestionsMutation,
 } from '../src/API';
 import { listBosss } from '../src/graphql/queries';
-import { createSession } from '../src/graphql/mutations';
+import { createSession, getRandomQuestions } from '../src/graphql/mutations';
 
 export async function getBossesData() {
   try {
@@ -65,43 +64,6 @@ export async function getBossData(slug: string | string[]) {
   }
 }
 
-const bossQuestions = `query GetQuestionsByBossId(
-  $id: ID!
-  $nextToken: String
-  $limit: Int
-) {
-  getBoss(id: $id) {
-    questions(limit: $limit, nextToken: $nextToken) {
-      nextToken
-      items {
-        text
-        answers {
-          correct
-          text
-        }
-      }
-    }
-  }
-}`;
-
-export async function getBossQuestions(
-  id: string,
-  limit?: number,
-  nextToken?: string
-) {
-  try {
-    const response = (await API.graphql(
-      graphqlOperation(bossQuestions, { id, limit, nextToken })
-    )) as {
-      data: GetBossQuery;
-      error: {}[];
-    };
-    return response.data.getBoss.questions;
-  } catch (error) {
-    console.warn(error);
-  }
-}
-
 export async function createSessionId() {
   try {
     const response = (await API.graphql(
@@ -116,4 +78,49 @@ export async function createSessionId() {
   }
 }
 
-export async function getRandomQuestions(sessionId: string, bossId: string) {}
+const getRandomQuestionsNoAnswers = `mutation GetRandomQuestions($input: GetRandomQuestionsInput) {
+  getRandomQuestions(input: $input) {
+    ... on DdbError {
+      statusCode
+      error
+    }
+    ... on NewQuestions {
+      newQuestions {
+        updatedAt
+        createdAt
+        answers {
+          text
+          correct
+        }
+        text
+        id
+        questionBossId
+      }
+    }
+  }
+}
+`;
+
+export async function getNewQuestions(
+  sessionId: string,
+  bossId: string,
+  numQuestionsForRound: number
+) {
+  try {
+    const response = (await API.graphql(
+      graphqlOperation(getRandomQuestions, {
+        input: {
+          sessionId,
+          bossId,
+          numQuestionsForRound,
+        },
+      })
+    )) as {
+      data: GetRandomQuestionsMutation;
+      error: {}[];
+    };
+    return response.data.getRandomQuestions;
+  } catch (error) {
+    console.warn(error);
+  }
+}
