@@ -1,6 +1,11 @@
 import Link from 'next/link';
 import React, { useEffect, useRef, useReducer, useState } from 'react';
-import { getBossData, getBossSlugs, getNewQuestions } from '../lib/bosses';
+import {
+  getBossData,
+  getBossSlugs,
+  getNewQuestions,
+  getQuestionAnswer,
+} from '../lib/bosses';
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -13,7 +18,6 @@ type Questions = Array<{
   answers: Array<{
     __typename: string;
     text: string;
-    correct: boolean;
   } | null> | null;
   text: string | null;
   id: string | null;
@@ -50,6 +54,10 @@ type ACTIONTYPE =
       type: 'set_current_questions';
       payload: Questions;
     }
+  | {
+      type: 'set_given_answer_idx';
+      payload: number;
+    }
   | { type: 'start_round' }
   | { type: 'end_round' }
   | { type: 'decrement_timer' }
@@ -57,13 +65,15 @@ type ACTIONTYPE =
   | {
       type: 'reset_round';
     }
-  | { type: 'damage_boss'; payload: number }
-  | { type: 'damage_player'; payload: number };
+  | { type: 'damage_boss' }
+  | { type: 'damage_player' };
 
 function reducer(state: InitialState, action: ACTIONTYPE) {
   switch (action.type) {
     case 'set_current_questions':
       return { ...state, currentQuestions: action.payload };
+    case 'set_given_answer_idx':
+      return { ...state, givenAnswerIdx: action.payload };
     case 'start_round':
       return { ...state, roundStarted: true };
     case 'end_round':
@@ -93,13 +103,11 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
       return {
         ...state,
         remainingBossHP: state.remainingBossHP - 1,
-        givenAnswerIdx: action.payload,
       };
     case 'damage_player':
       return {
         ...state,
         remainingPlayerHP: state.remainingPlayerHP - 1,
-        givenAnswerIdx: action.payload,
       };
     default:
       console.warn('No matching type for that action.');
@@ -136,9 +144,9 @@ export default function Boss({ bossData, sessionId }: Props) {
   useEffect(() => {
     const setQuestions = async (): Promise<void> => {
       const res = await getNewQuestions(sessionId, bossData.id, 8);
-      console.log(`res`, res);
-      if (res.__typename === 'DdbError') {
-        setError(res.error);
+      console.log(`questions`, res);
+      if (!res || res.__typename === 'DdbError') {
+        setError('Could not fetch questions');
       } else {
         dispatch({ type: 'set_current_questions', payload: res.newQuestions });
       }
@@ -161,11 +169,22 @@ export default function Boss({ bossData, sessionId }: Props) {
   }, [state.roundStarted, state.currQuestionIdx]);
 
   useEffect(() => {
-    if (state.givenAnswerIdx !== null || state.timeRemaining === 0) {
-      clearTimeRemaining();
-      if (state.timeRemaining === 0) {
-        dispatch({ type: 'damage_player', payload: null });
+    const getCorrectAnswer = async (): Promise<void> => {
+      const currQuestionId = state.currentQuestions[state.currQuestionIdx].id;
+      const answers = await getQuestionAnswer(currQuestionId);
+      console.log(`answers`, answers);
+      if (!answers) {
+        setError('Could not fetch answer');
+      } else {
+        state.givenAnswerIdx === answers.findIndex((ans) => ans.correct)
+          ? dispatch({ type: 'damage_boss' })
+          : dispatch({ type: 'damage_player' });
       }
+    };
+
+    if (state.givenAnswerIdx !== null || state.timeRemaining <= 0) {
+      clearTimeRemaining();
+      getCorrectAnswer();
     }
   }, [state.givenAnswerIdx, state.timeRemaining]);
 
@@ -231,15 +250,11 @@ export default function Boss({ bossData, sessionId }: Props) {
           <p>{state.currentQuestions[state.currQuestionIdx].text}</p>
           <ul>
             {state.currentQuestions[state.currQuestionIdx].answers.map(
-              ({ text, correct }, idx: number) => (
+              ({ text }, idx: number) => (
                 <li key={text}>
                   <button
                     onClick={() => {
-                      if (correct) {
-                        dispatch({ type: 'damage_boss', payload: idx });
-                      } else {
-                        dispatch({ type: 'damage_player', payload: idx });
-                      }
+                      dispatch({ type: 'set_given_answer_idx', payload: idx });
                     }}
                     disabled={
                       state.givenAnswerIdx !== null || state.timeRemaining <= 0
