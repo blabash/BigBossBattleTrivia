@@ -26,6 +26,7 @@ type Questions = Array<{
 
 type InitialState = {
   currentQuestions: Questions;
+  answerHistory: { givenIdx: number | null; correctIdx: number }[];
   timeRemaining: number;
   currQuestionIdx: number;
   givenAnswerIdx: number | null;
@@ -36,9 +37,9 @@ type InitialState = {
   remainingBossHP: number;
 };
 
-const initialState = {
-  questionsBank: null,
+const initialState: InitialState = {
   currentQuestions: null,
+  answerHistory: [],
   timeRemaining: 5,
   currQuestionIdx: 0,
   givenAnswerIdx: null,
@@ -51,6 +52,7 @@ const initialState = {
 
 enum ActionType {
   SET_CURRENT_QUESTIONS = 'set_current_questions',
+  UPDATE_ANSWER_HISTORY = 'update_answer_history',
   SET_GIVEN_ANSWER_IDX = 'set_given_answer_idx',
   START_ROUND = 'start_round',
   END_ROUND = 'end_round',
@@ -65,6 +67,10 @@ type ACTIONTYPE =
   | {
       type: ActionType.SET_CURRENT_QUESTIONS;
       payload: Questions;
+    }
+  | {
+      type: ActionType.UPDATE_ANSWER_HISTORY;
+      payload: { givenIdx: number | null; correctIdx: number };
     }
   | {
       type: ActionType.SET_GIVEN_ANSWER_IDX;
@@ -84,6 +90,11 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
   switch (action.type) {
     case ActionType.SET_CURRENT_QUESTIONS:
       return { ...state, currentQuestions: action.payload };
+    case ActionType.UPDATE_ANSWER_HISTORY:
+      return {
+        ...state,
+        answerHistory: state.answerHistory.concat(action.payload),
+      };
     case ActionType.SET_GIVEN_ANSWER_IDX:
       return { ...state, givenAnswerIdx: action.payload };
     case ActionType.START_ROUND:
@@ -110,6 +121,7 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
         remainingPlayerHP: 3,
         bossHP: 3,
         remainingBossHP: 3,
+        answerHistory: [],
       };
     case ActionType.DAMAGE_BOSS:
       return {
@@ -125,20 +137,6 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
       console.warn('No matching type for that action.');
       return state;
   }
-}
-
-function init(): InitialState {
-  return {
-    currentQuestions: null,
-    timeRemaining: 5,
-    currQuestionIdx: 0,
-    givenAnswerIdx: null,
-    roundStarted: false,
-    playerHP: 3,
-    remainingPlayerHP: 3,
-    bossHP: 3,
-    remainingBossHP: 3,
-  };
 }
 
 interface Props extends InferGetStaticPropsType<typeof getStaticProps> {
@@ -188,13 +186,18 @@ export default function Boss({ bossData, sessionId }: Props) {
       const currQuestionId = state.currentQuestions[state.currQuestionIdx].id;
       const answers = await getQuestionAnswer(currQuestionId);
       console.log(`answers`, answers);
+      const correctIdx = answers.findIndex((ans) => ans.correct);
       if (!answers) {
         setError('Could not fetch answer');
       } else {
-        state.givenAnswerIdx === answers.findIndex((ans) => ans.correct)
+        state.givenAnswerIdx === correctIdx
           ? dispatch({ type: ActionType.DAMAGE_BOSS })
           : dispatch({ type: ActionType.DAMAGE_PLAYER });
       }
+      dispatch({
+        type: ActionType.UPDATE_ANSWER_HISTORY,
+        payload: { givenIdx: state.givenAnswerIdx, correctIdx },
+      });
     };
 
     if (state.givenAnswerIdx !== null || state.timeRemaining <= 0) {
@@ -290,6 +293,16 @@ export default function Boss({ bossData, sessionId }: Props) {
               {
                 state.currentQuestions[state.currQuestionIdx].answers[
                   state.givenAnswerIdx
+                ].text
+              }
+            </p>
+          )}
+          {state.answerHistory[state.currQuestionIdx] && (
+            <p>
+              correct answer:{' '}
+              {
+                state.currentQuestions[state.currQuestionIdx].answers[
+                  state.answerHistory[state.currQuestionIdx].correctIdx
                 ].text
               }
             </p>
