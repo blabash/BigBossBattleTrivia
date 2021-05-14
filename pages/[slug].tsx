@@ -49,45 +49,57 @@ const initialState = {
   remainingBossHP: 3,
 };
 
+enum ActionType {
+  SET_CURRENT_QUESTIONS = 'set_current_questions',
+  SET_GIVEN_ANSWER_IDX = 'set_given_answer_idx',
+  START_ROUND = 'start_round',
+  END_ROUND = 'end_round',
+  DECREMENT_TIMER = 'decrement_timer',
+  NEXT_QUESTION = 'next_question',
+  RESET_ROUND = 'reset_round',
+  DAMAGE_BOSS = 'damage_boss',
+  DAMAGE_PLAYER = 'damage_player',
+}
+
 type ACTIONTYPE =
   | {
-      type: 'set_current_questions';
+      type: ActionType.SET_CURRENT_QUESTIONS;
       payload: Questions;
     }
   | {
-      type: 'set_given_answer_idx';
+      type: ActionType.SET_GIVEN_ANSWER_IDX;
       payload: number;
     }
-  | { type: 'start_round' }
-  | { type: 'end_round' }
-  | { type: 'decrement_timer' }
-  | { type: 'next_question' }
+  | { type: ActionType.START_ROUND }
+  | { type: ActionType.END_ROUND }
+  | { type: ActionType.DECREMENT_TIMER }
+  | { type: ActionType.NEXT_QUESTION }
   | {
-      type: 'reset_round';
+      type: ActionType.RESET_ROUND;
     }
-  | { type: 'damage_boss' }
-  | { type: 'damage_player' };
+  | { type: ActionType.DAMAGE_BOSS }
+  | { type: ActionType.DAMAGE_PLAYER };
 
 function reducer(state: InitialState, action: ACTIONTYPE) {
   switch (action.type) {
-    case 'set_current_questions':
+    case ActionType.SET_CURRENT_QUESTIONS:
       return { ...state, currentQuestions: action.payload };
-    case 'set_given_answer_idx':
+    case ActionType.SET_GIVEN_ANSWER_IDX:
       return { ...state, givenAnswerIdx: action.payload };
-    case 'start_round':
+    case ActionType.START_ROUND:
       return { ...state, roundStarted: true };
-    case 'end_round':
+    case ActionType.END_ROUND:
       return { ...state, roundStarted: false };
-    case 'decrement_timer':
+    case ActionType.DECREMENT_TIMER:
       return { ...state, timeRemaining: state.timeRemaining - 1 };
-    case 'next_question':
+    case ActionType.NEXT_QUESTION:
       return {
         ...state,
         currQuestionIdx: state.currQuestionIdx + 1,
         givenAnswerIdx: null,
         timeRemaining: 5,
       };
-    case 'reset_round':
+    case ActionType.RESET_ROUND:
       return {
         ...state,
         timeRemaining: 5,
@@ -99,12 +111,12 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
         bossHP: 3,
         remainingBossHP: 3,
       };
-    case 'damage_boss':
+    case ActionType.DAMAGE_BOSS:
       return {
         ...state,
         remainingBossHP: state.remainingBossHP - 1,
       };
-    case 'damage_player':
+    case ActionType.DAMAGE_PLAYER:
       return {
         ...state,
         remainingPlayerHP: state.remainingPlayerHP - 1,
@@ -148,7 +160,10 @@ export default function Boss({ bossData, sessionId }: Props) {
       if (!res || res.__typename === 'DdbError') {
         setError('Could not fetch questions');
       } else {
-        dispatch({ type: 'set_current_questions', payload: res.newQuestions });
+        dispatch({
+          type: ActionType.SET_CURRENT_QUESTIONS,
+          payload: res.newQuestions,
+        });
       }
     };
 
@@ -161,7 +176,7 @@ export default function Boss({ bossData, sessionId }: Props) {
     if (state.roundStarted === true || state.currQuestionIdx) {
       if (state.roundStarted) {
         timeRemainingId.current = window.setInterval(() => {
-          dispatch({ type: 'decrement_timer' });
+          dispatch({ type: ActionType.DECREMENT_TIMER });
         }, 1000);
       }
     }
@@ -177,8 +192,8 @@ export default function Boss({ bossData, sessionId }: Props) {
         setError('Could not fetch answer');
       } else {
         state.givenAnswerIdx === answers.findIndex((ans) => ans.correct)
-          ? dispatch({ type: 'damage_boss' })
-          : dispatch({ type: 'damage_player' });
+          ? dispatch({ type: ActionType.DAMAGE_BOSS })
+          : dispatch({ type: ActionType.DAMAGE_PLAYER });
       }
     };
 
@@ -195,10 +210,10 @@ export default function Boss({ bossData, sessionId }: Props) {
         state.remainingPlayerHP >= 1 &&
         state.roundStarted
       ) {
-        dispatch({ type: 'next_question' });
+        dispatch({ type: ActionType.NEXT_QUESTION });
         return;
       } else if (state.currQuestionIdx > 0) {
-        dispatch({ type: 'end_round' });
+        dispatch({ type: ActionType.END_ROUND });
       }
     }, 2000);
 
@@ -225,13 +240,13 @@ export default function Boss({ bossData, sessionId }: Props) {
       {!state.roundStarted &&
         state.remainingBossHP === state.bossHP &&
         state.remainingPlayerHP === state.playerHP && (
-          <button onClick={() => dispatch({ type: 'start_round' })}>
+          <button onClick={() => dispatch({ type: ActionType.START_ROUND })}>
             Begin
           </button>
         )}
       {!state.roundStarted &&
         (state.remainingPlayerHP === 0 || state.remainingBossHP === 0) && (
-          <button onClick={() => dispatch({ type: 'reset_round' })}>
+          <button onClick={() => dispatch({ type: ActionType.RESET_ROUND })}>
             Restart
           </button>
         )}
@@ -254,7 +269,10 @@ export default function Boss({ bossData, sessionId }: Props) {
                 <li key={text}>
                   <button
                     onClick={() => {
-                      dispatch({ type: 'set_given_answer_idx', payload: idx });
+                      dispatch({
+                        type: ActionType.SET_GIVEN_ANSWER_IDX,
+                        payload: idx,
+                      });
                     }}
                     disabled={
                       state.givenAnswerIdx !== null || state.timeRemaining <= 0
