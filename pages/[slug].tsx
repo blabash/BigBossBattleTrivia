@@ -24,7 +24,7 @@ type Questions = Array<{
   questionBossId: string | null;
 } | null> | null;
 
-type InitialState = {
+type State = {
   currentQuestions: Questions;
   answerHistory: { givenIdx: number | null; correctIdx: number }[];
   timeRemaining: number;
@@ -35,19 +35,6 @@ type InitialState = {
   remainingPlayerHP: number;
   bossHP: number;
   remainingBossHP: number;
-};
-
-const initialState: InitialState = {
-  currentQuestions: null,
-  answerHistory: [],
-  timeRemaining: 5,
-  currQuestionIdx: 0,
-  givenAnswerIdx: null,
-  roundStarted: false,
-  playerHP: 3,
-  remainingPlayerHP: 3,
-  bossHP: 3,
-  remainingBossHP: 3,
 };
 
 enum ActionType {
@@ -86,7 +73,7 @@ type ACTIONTYPE =
   | { type: ActionType.DAMAGE_BOSS }
   | { type: ActionType.DAMAGE_PLAYER };
 
-function reducer(state: InitialState, action: ACTIONTYPE) {
+function reducer(state: Readonly<State>, action: ACTIONTYPE): Readonly<State> {
   switch (action.type) {
     case ActionType.SET_CURRENT_QUESTIONS:
       return { ...state, currentQuestions: action.payload };
@@ -142,6 +129,19 @@ function reducer(state: InitialState, action: ACTIONTYPE) {
 interface Props extends InferGetStaticPropsType<typeof getStaticProps> {
   sessionId: CreateSessionMutation['createSession']['id'];
 }
+
+const initialState: State = {
+  currentQuestions: null,
+  answerHistory: [],
+  timeRemaining: 5,
+  currQuestionIdx: 0,
+  givenAnswerIdx: null,
+  roundStarted: false,
+  playerHP: 3,
+  remainingPlayerHP: 3,
+  bossHP: 3,
+  remainingBossHP: 3,
+};
 
 export default function Boss({ bossData, sessionId }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
