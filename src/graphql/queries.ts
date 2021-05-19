@@ -88,6 +88,7 @@ export const getSession = `query GetSession($id: ID!) {
   getSession(id: $id) {
     id
     seenQuestions
+    inventory
   }
 }
 `;
@@ -100,6 +101,7 @@ export const listSessions = `query ListSessions(
     items {
       id
       seenQuestions
+      inventory
     }
     nextToken
   }

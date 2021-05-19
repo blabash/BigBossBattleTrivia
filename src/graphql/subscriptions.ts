@@ -119,6 +119,7 @@ export const onCreateSession = `subscription OnCreateSession {
   onCreateSession {
     id
     seenQuestions
+    inventory
   }
 }
 `;
@@ -126,6 +127,7 @@ export const onUpdateSession = `subscription OnUpdateSession {
   onUpdateSession {
     id
     seenQuestions
+    inventory
   }
 }
 `;
@@ -133,6 +135,7 @@ export const onDeleteSession = `subscription OnDeleteSession {
   onDeleteSession {
     id
     seenQuestions
+    inventory
   }
 }
 `;

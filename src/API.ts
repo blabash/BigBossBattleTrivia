@@ -110,10 +110,12 @@ export type DeleteQuestionInput = {
 export type CreateSessionInput = {
   id?: string | null,
   seenQuestions?: string | null,
+  inventory?: string | null,
 };
 
 export type ModelSessionConditionInput = {
   seenQuestions?: ModelStringInput | null,
+  inventory?: ModelStringInput | null,
   and?: Array< ModelSessionConditionInput | null > | null,
   or?: Array< ModelSessionConditionInput | null > | null,
   not?: ModelSessionConditionInput | null,
@@ -122,6 +124,7 @@ export type ModelSessionConditionInput = {
 export type UpdateSessionInput = {
   id: string,
   seenQuestions?: string | null,
+  inventory?: string | null,
 };
 
 export type DeleteSessionInput = {
@@ -166,6 +169,7 @@ export type ModelQuestionFilterInput = {
 export type ModelSessionFilterInput = {
   id?: ModelIDInput | null,
   seenQuestions?: ModelStringInput | null,
+  inventory?: ModelStringInput | null,
   and?: Array< ModelSessionFilterInput | null > | null,
   or?: Array< ModelSessionFilterInput | null > | null,
   not?: ModelSessionFilterInput | null,
@@ -374,6 +378,7 @@ export type CreateSessionMutation = {
     __typename: "Session",
     id: string,
     seenQuestions: string | null,
+    inventory: string | null,
   } | null,
 };
 
@@ -387,6 +392,7 @@ export type UpdateSessionMutation = {
     __typename: "Session",
     id: string,
     seenQuestions: string | null,
+    inventory: string | null,
   } | null,
 };
 
@@ -400,6 +406,7 @@ export type DeleteSessionMutation = {
     __typename: "Session",
     id: string,
     seenQuestions: string | null,
+    inventory: string | null,
   } | null,
 };
 
@@ -521,6 +528,7 @@ export type GetSessionQuery = {
     __typename: "Session",
     id: string,
     seenQuestions: string | null,
+    inventory: string | null,
   } | null,
 };
 
@@ -537,6 +545,7 @@ export type ListSessionsQuery = {
       __typename: "Session",
       id: string,
       seenQuestions: string | null,
+      inventory: string | null,
     } | null > | null,
     nextToken: string | null,
   } | null,
@@ -682,6 +691,7 @@ export type OnCreateSessionSubscription = {
     __typename: "Session",
     id: string,
     seenQuestions: string | null,
+    inventory: string | null,
   } | null,
 };
 
@@ -690,6 +700,7 @@ export type OnUpdateSessionSubscription = {
     __typename: "Session",
     id: string,
     seenQuestions: string | null,
+    inventory: string | null,
   } | null,
 };
 
@@ -698,5 +709,6 @@ export type OnDeleteSessionSubscription = {
     __typename: "Session",
     id: string,
     seenQuestions: string | null,
+    inventory: string | null,
   } | null,
 };

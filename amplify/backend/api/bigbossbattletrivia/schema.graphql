@@ -22,6 +22,7 @@ type Answer {
 type Session @model {
   id: ID!
   seenQuestions: AWSJSON
+  inventory: AWSJSON
 }
 
 input GetRandomQuestionsInput {

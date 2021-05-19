@@ -162,6 +162,7 @@ export const createSession = `mutation CreateSession(
   createSession(input: $input, condition: $condition) {
     id
     seenQuestions
+    inventory
   }
 }
 `;
@@ -172,6 +173,7 @@ export const updateSession = `mutation UpdateSession(
   updateSession(input: $input, condition: $condition) {
     id
     seenQuestions
+    inventory
   }
 }
 `;
@@ -182,6 +184,7 @@ export const deleteSession = `mutation DeleteSession(
   deleteSession(input: $input, condition: $condition) {
     id
     seenQuestions
+    inventory
   }
 }
 `;
