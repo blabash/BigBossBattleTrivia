@@ -8,7 +8,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "amplify:getRandomQuestions": "cd amplify/backend/function/getRandomQuestions/src && tsc ./*.ts"
+    "amplify:getRandomQuestions": "cd amplify/backend/function/getRandomQuestions/src && tsc ./*.ts",
+    "amplify:getRandomLootItem": "cd amplify/backend/function/getRandomLootItem/src && tsc ./*.ts"
   },
   "keywords": [],
   "author": "",

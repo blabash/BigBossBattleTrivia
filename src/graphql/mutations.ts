@@ -1,7 +1,7 @@
 // tslint:disable
 // this is an auto generated file. This will be overwritten
 
-export const getRandomQuestions = `mutation GetRandomQuestions($input: GetRandomQuestionsInput) {
+export const getRandomQuestions = `mutation GetRandomQuestions($input: GetRandomQuestionsInput!) {
   getRandomQuestions(input: $input) {
     ... on DdbError {
       statusCode
@@ -19,6 +19,21 @@ export const getRandomQuestions = `mutation GetRandomQuestions($input: GetRandom
         id
         questionBossId
       }
+    }
+  }
+}
+`;
+export const getRandomLootItem = `mutation GetRandomLootItem($input: GetRandomLootItemInput!) {
+  getRandomLootItem(input: $input) {
+    ... on DdbError {
+      statusCode
+      error
+    }
+    ... on LootItem {
+      id
+      name
+      thumbnailUrl
+      tooltipUrl
     }
   }
 }

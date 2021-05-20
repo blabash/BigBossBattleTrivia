@@ -51,7 +51,23 @@ type NewQuestions {
 
 union GetRandomQuestionsResult = DdbError | NewQuestions
 
+input GetRandomLootItemInput {
+  bossId: ID!
+  sessionId: ID!
+}
+
+type LootItem {
+  id: String
+  name: String
+  thumbnailUrl: String
+  tooltipUrl: String
+}
+
+union GetRandomLootItemResult = DdbError | LootItem
+
 type Mutation {
-  getRandomQuestions(input: GetRandomQuestionsInput): GetRandomQuestionsResult
+  getRandomQuestions(input: GetRandomQuestionsInput!): GetRandomQuestionsResult
     @function(name: "getRandomQuestions-${env}")
+  getRandomLootItem(input: GetRandomLootItemInput!): GetRandomLootItemResult
+    @function(name: "getRandomLootItem-${env}")
 }

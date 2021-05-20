@@ -74,7 +74,7 @@ export async function createSessionId() {
   }
 }
 
-const getRandomQuestionsWithoutCorrectAnswer = `mutation GetRandomQuestions($input: GetRandomQuestionsInput) {
+const getRandomQuestionsWithoutCorrectAnswer = `mutation GetRandomQuestions($input: GetRandomQuestionsInput!) {
   getRandomQuestions(input: $input) {
     ... on DdbError {
       statusCode

@@ -7,6 +7,11 @@ export type GetRandomQuestionsInput = {
   numQuestionsForRound: number,
 };
 
+export type GetRandomLootItemInput = {
+  bossId: string,
+  sessionId: string,
+};
+
 export type CreateBossInput = {
   id?: string | null,
   name: string,
@@ -176,7 +181,7 @@ export type ModelSessionFilterInput = {
 };
 
 export type GetRandomQuestionsMutationVariables = {
-  input?: GetRandomQuestionsInput | null,
+  input: GetRandomQuestionsInput,
 };
 
 export type GetRandomQuestionsMutation = {
@@ -199,6 +204,25 @@ export type GetRandomQuestionsMutation = {
         id: string | null,
         questionBossId: string | null,
       } | null > | null,
+    }
+  ) | null,
+};
+
+export type GetRandomLootItemMutationVariables = {
+  input: GetRandomLootItemInput,
+};
+
+export type GetRandomLootItemMutation = {
+  getRandomLootItem: ( {
+      __typename: "DdbError",
+      statusCode: number | null,
+      error: string | null,
+    } | {
+      __typename: "LootItem",
+      id: string | null,
+      name: string | null,
+      thumbnailUrl: string | null,
+      tooltipUrl: string | null,
     }
   ) | null,
 };
