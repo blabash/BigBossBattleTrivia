@@ -63,7 +63,11 @@ type LootItem {
   tooltipUrl: String
 }
 
-union GetRandomLootItemResult = DdbError | LootItem
+type LootItemResult {
+  lootItem: LootItem
+}
+
+union GetRandomLootItemResult = DdbError | LootItemResult
 
 type Mutation {
   getRandomQuestions(input: GetRandomQuestionsInput!): GetRandomQuestionsResult

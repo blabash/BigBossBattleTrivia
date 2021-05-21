@@ -218,11 +218,14 @@ export type GetRandomLootItemMutation = {
       statusCode: number | null,
       error: string | null,
     } | {
-      __typename: "LootItem",
-      id: string | null,
-      name: string | null,
-      thumbnailUrl: string | null,
-      tooltipUrl: string | null,
+      __typename: "LootItemResult",
+      lootItem:  {
+        __typename: string,
+        id: string | null,
+        name: string | null,
+        thumbnailUrl: string | null,
+        tooltipUrl: string | null,
+      } | null,
     }
   ) | null,
 };

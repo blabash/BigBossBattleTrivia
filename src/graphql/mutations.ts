@@ -29,11 +29,13 @@ export const getRandomLootItem = `mutation GetRandomLootItem($input: GetRandomLo
       statusCode
       error
     }
-    ... on LootItem {
-      id
-      name
-      thumbnailUrl
-      tooltipUrl
+    ... on LootItemResult {
+      lootItem {
+        id
+        name
+        thumbnailUrl
+        tooltipUrl
+      }
     }
   }
 }
