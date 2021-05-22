@@ -95,7 +95,7 @@ const getRandomQuestionsWithoutCorrectAnswer = `mutation GetRandomQuestions($inp
   }
 }
 `;
-export type GetRandomQuestionsMutation = {
+type GetRandomQuestionsMutation = {
   getRandomQuestions:
     | (
         | {
