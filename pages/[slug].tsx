@@ -171,7 +171,7 @@ export default function Boss({ bossData, sessionId }: Props) {
   }, [state.roundStarted]);
 
   useEffect(() => {
-    if (state.roundStarted) {
+    if (state.roundStarted === true) {
       timeRemainingId.current = window.setInterval(() => {
         dispatch({ type: ActionType.DECREMENT_TIMER });
       }, 1000);
