@@ -171,12 +171,10 @@ export default function Boss({ bossData, sessionId }: Props) {
   }, [state.roundStarted]);
 
   useEffect(() => {
-    if (state.roundStarted === true || state.currQuestionIdx) {
-      if (state.roundStarted) {
-        timeRemainingId.current = window.setInterval(() => {
-          dispatch({ type: ActionType.DECREMENT_TIMER });
-        }, 1000);
-      }
+    if (state.roundStarted) {
+      timeRemainingId.current = window.setInterval(() => {
+        dispatch({ type: ActionType.DECREMENT_TIMER });
+      }, 1000);
     }
     return clearTimeRemaining;
   }, [state.roundStarted, state.currQuestionIdx]);
