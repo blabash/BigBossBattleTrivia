@@ -1,104 +1,104 @@
 {
-	"providers": {
-		"awscloudformation": {
-			"AuthRoleName": "amplify-bigbossbattletrivia-dev-211357-authRole",
-			"UnauthRoleArn": "arn:aws:iam::179477624370:role/amplify-bigbossbattletrivia-dev-211357-unauthRole",
-			"AuthRoleArn": "arn:aws:iam::179477624370:role/amplify-bigbossbattletrivia-dev-211357-authRole",
-			"Region": "us-west-2",
-			"DeploymentBucketName": "amplify-bigbossbattletrivia-dev-211357-deployment",
-			"UnauthRoleName": "amplify-bigbossbattletrivia-dev-211357-unauthRole",
-			"StackName": "amplify-bigbossbattletrivia-dev-211357",
-			"StackId": "arn:aws:cloudformation:us-west-2:179477624370:stack/amplify-bigbossbattletrivia-dev-211357/d9e9a7f0-9369-11eb-b545-0a449d0be91d",
-			"AmplifyAppId": "dhzec5ffssnsu"
-		}
-	},
-	"api": {
-		"bigbossbattletrivia": {
-			"service": "AppSync",
-			"providerPlugin": "awscloudformation",
-			"output": {
-				"authConfig": {
-					"additionalAuthenticationProviders": [],
-					"defaultAuthentication": {
-						"authenticationType": "API_KEY",
-						"apiKeyConfig": {
-							"description": "BigBossBattleTrivia",
-							"apiKeyExpirationDays": "365"
-						}
-					}
-				},
-				"GraphQLAPIIdOutput": "zvmlbr6ejzh4xfqcfjgso77a5e",
-				"GraphQLAPIEndpointOutput": "https://yjcumypiyraqrf4b4oe75ufjyu.appsync-api.us-west-2.amazonaws.com/graphql",
-				"GraphQLAPIKeyOutput": "da2-mtcchwi5y5ghfkp3qumveqetye"
-			},
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/amplify-bigbossbattletrivia-dev-211357-deployment/amplify-cfn-templates/api/cloudformation-template.json",
-				"logicalId": "apibigbossbattletrivia"
-			},
-			"lastPushTimeStamp": "2021-05-21T00:39:03.835Z",
-			"lastPushDirHash": "XMV8tK+SoJdWXhSWyO37znBTnwA="
-		}
-	},
-	"function": {
-		"getRandomQuestions": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "api",
-					"resourceName": "bigbossbattletrivia",
-					"attributes": [
-						"GraphQLAPIIdOutput",
-						"GraphQLAPIEndpointOutput"
-					]
-				}
-			],
-			"lastBuildTimeStamp": "2021-05-19T12:28:43.419Z",
-			"lastPackageTimeStamp": "2021-05-19T12:38:09.436Z",
-			"distZipFilename": "getRandomQuestions-4c6e7533546f6e696b74-build.zip",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/amplify-bigbossbattletrivia-dev-211357-deployment/amplify-cfn-templates/function/getRandomQuestions-cloudformation-template.json",
-				"logicalId": "functiongetRandomQuestions"
-			},
-			"lastPushTimeStamp": "2021-05-21T00:39:03.841Z",
-			"output": {
-				"Region": "us-west-2",
-				"Arn": "arn:aws:lambda:us-west-2:179477624370:function:getRandomQuestions-dev",
-				"Name": "getRandomQuestions-dev",
-				"LambdaExecutionRole": "bigbossbattletriviaLambdaRole40ec6c94-dev"
-			},
-			"lastPushDirHash": "q57Jm0omPT02i/WojBrzd1WCTHM="
-		},
-		"getRandomLootItem": {
-			"service": "Lambda",
-			"providerPlugin": "awscloudformation",
-			"build": true,
-			"dependsOn": [
-				{
-					"category": "api",
-					"resourceName": "bigbossbattletrivia",
-					"attributes": [
-						"GraphQLAPIIdOutput",
-						"GraphQLAPIEndpointOutput"
-					]
-				}
-			],
-			"lastBuildTimeStamp": "2021-05-20T22:08:30.833Z",
-			"lastPackageTimeStamp": "2021-05-21T00:37:20.985Z",
-			"distZipFilename": "getRandomLootItem-414f44455533474d5049-build.zip",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/amplify-bigbossbattletrivia-dev-211357-deployment/amplify-cfn-templates/function/getRandomLootItem-cloudformation-template.json",
-				"logicalId": "functiongetRandomLootItem"
-			},
-			"lastPushTimeStamp": "2021-05-21T00:39:03.844Z",
-			"output": {
-				"Region": "us-west-2",
-				"Arn": "arn:aws:lambda:us-west-2:179477624370:function:getRandomLootItem-dev",
-				"Name": "getRandomLootItem-dev",
-				"LambdaExecutionRole": "bigbossbattletriviaLambdaRolefe2116b5-dev"
-			},
-			"lastPushDirHash": "PEc3ubL9ZkSKF1G+DTbjYS2CY9Y="
-		}
-	}
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-bigbossbattletrivia-dev-211357-authRole",
+      "UnauthRoleArn": "arn:aws:iam::179477624370:role/amplify-bigbossbattletrivia-dev-211357-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::179477624370:role/amplify-bigbossbattletrivia-dev-211357-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-bigbossbattletrivia-dev-211357-deployment",
+      "UnauthRoleName": "amplify-bigbossbattletrivia-dev-211357-unauthRole",
+      "StackName": "amplify-bigbossbattletrivia-dev-211357",
+      "StackId": "arn:aws:cloudformation:us-west-2:179477624370:stack/amplify-bigbossbattletrivia-dev-211357/d9e9a7f0-9369-11eb-b545-0a449d0be91d",
+      "AmplifyAppId": "dhzec5ffssnsu"
+    }
+  },
+  "api": {
+    "bigbossbattletrivia": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [],
+          "defaultAuthentication": {
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "description": "BigBossBattleTrivia",
+              "apiKeyExpirationDays": "365"
+            }
+          }
+        },
+        "GraphQLAPIIdOutput": "zvmlbr6ejzh4xfqcfjgso77a5e",
+        "GraphQLAPIEndpointOutput": "https://yjcumypiyraqrf4b4oe75ufjyu.appsync-api.us-west-2.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-mtcchwi5y5ghfkp3qumveqetye"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bigbossbattletrivia-dev-211357-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apibigbossbattletrivia"
+      },
+      "lastPushTimeStamp": "2021-06-13T02:22:29.699Z",
+      "lastPushDirHash": "XMV8tK+SoJdWXhSWyO37znBTnwA="
+    }
+  },
+  "function": {
+    "getRandomQuestions": {
+      "service": "Lambda",
+      "providerPlugin": "awscloudformation",
+      "build": true,
+      "dependsOn": [
+        {
+          "category": "api",
+          "resourceName": "bigbossbattletrivia",
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ]
+        }
+      ],
+      "lastBuildTimeStamp": "2021-05-19T12:28:43.419Z",
+      "lastPackageTimeStamp": "2021-05-19T12:38:09.436Z",
+      "distZipFilename": "getRandomQuestions-4c6e7533546f6e696b74-build.zip",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bigbossbattletrivia-dev-211357-deployment/amplify-cfn-templates/function/getRandomQuestions-cloudformation-template.json",
+        "logicalId": "functiongetRandomQuestions"
+      },
+      "lastPushTimeStamp": "2021-06-13T02:22:29.701Z",
+      "output": {
+        "Region": "us-west-2",
+        "Arn": "arn:aws:lambda:us-west-2:179477624370:function:getRandomQuestions-dev",
+        "Name": "getRandomQuestions-dev",
+        "LambdaExecutionRole": "bigbossbattletriviaLambdaRole40ec6c94-dev"
+      },
+      "lastPushDirHash": "q57Jm0omPT02i/WojBrzd1WCTHM="
+    },
+    "getRandomLootItem": {
+      "service": "Lambda",
+      "providerPlugin": "awscloudformation",
+      "build": true,
+      "dependsOn": [
+        {
+          "category": "api",
+          "resourceName": "bigbossbattletrivia",
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput"
+          ]
+        }
+      ],
+      "lastBuildTimeStamp": "2021-05-20T22:08:30.833Z",
+      "lastPackageTimeStamp": "2021-05-21T00:37:20.985Z",
+      "distZipFilename": "getRandomLootItem-414f44455533474d5049-build.zip",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-bigbossbattletrivia-dev-211357-deployment/amplify-cfn-templates/function/getRandomLootItem-cloudformation-template.json",
+        "logicalId": "functiongetRandomLootItem"
+      },
+      "lastPushTimeStamp": "2021-06-13T02:22:29.702Z",
+      "output": {
+        "Region": "us-west-2",
+        "Arn": "arn:aws:lambda:us-west-2:179477624370:function:getRandomLootItem-dev",
+        "Name": "getRandomLootItem-dev",
+        "LambdaExecutionRole": "bigbossbattletriviaLambdaRolefe2116b5-dev"
+      },
+      "lastPushDirHash": "PEc3ubL9ZkSKF1G+DTbjYS2CY9Y="
+    }
+  }
 }
