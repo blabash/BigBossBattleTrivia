@@ -1,0 +1,8 @@
+{
+    "CreateAPIKey": 1,
+    "AppSyncApiName": "bigbossbattletrivia",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": "false",
+    "S3DeploymentBucket": "amplify-bigbossbattletrivia-dev-211357-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/a5e9beaa6b090981aa5d65784ab5737eafbbc5f7"
+}

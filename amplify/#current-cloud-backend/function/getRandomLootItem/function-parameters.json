@@ -1,0 +1,11 @@
+{
+    "permissions": {
+        "api": {
+            "bigbossbattletrivia": [
+                "create",
+                "read",
+                "update"
+            ]
+        }
+    }
+}

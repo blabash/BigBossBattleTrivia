@@ -1,0 +1,19 @@
+{
+  "name": "getRandomQuestions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "aws-sdk": "^2.898.0",
+    "source-map-support": "^0.5.19"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.76",
+    "@types/node": "^15.0.1"
+  }
+}

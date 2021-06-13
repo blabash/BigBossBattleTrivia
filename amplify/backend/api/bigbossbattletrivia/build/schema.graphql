@@ -1,0 +1,323 @@
+type Boss {
+  id: ID!
+  name: String!
+  slug: String!
+  bossImgUrl: AWSURL
+  background: String
+  questions(filter: ModelQuestionFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelQuestionConnection
+}
+
+type Question {
+  id: ID!
+  text: String!
+  boss: Boss!
+  answers: [Answer!]!
+}
+
+type Answer {
+  text: String!
+  correct: Boolean!
+}
+
+type Session {
+  id: ID!
+  seenQuestions: AWSJSON
+  inventory: AWSJSON
+}
+
+input GetRandomQuestionsInput {
+  bossId: ID!
+  sessionId: ID!
+  numQuestionsForRound: Int!
+}
+
+type DdbError {
+  statusCode: Int
+  error: String
+}
+
+type DdbQuestion {
+  updatedAt: String
+  createdAt: String
+  answers: [Answer]
+  text: String
+  id: String
+  questionBossId: String
+}
+
+type NewQuestions {
+  newQuestions: [DdbQuestion]
+}
+
+union GetRandomQuestionsResult = DdbError | NewQuestions
+
+input GetRandomLootItemInput {
+  bossId: ID!
+  sessionId: ID!
+}
+
+type LootItem {
+  id: String
+  name: String
+  thumbnailUrl: String
+  tooltipUrl: String
+}
+
+type LootItemResult {
+  lootItem: LootItem
+}
+
+union GetRandomLootItemResult = DdbError | LootItemResult
+
+type Mutation {
+  getRandomQuestions(input: GetRandomQuestionsInput!): GetRandomQuestionsResult
+  getRandomLootItem(input: GetRandomLootItemInput!): GetRandomLootItemResult
+  createBoss(input: CreateBossInput!, condition: ModelBossConditionInput): Boss
+  updateBoss(input: UpdateBossInput!, condition: ModelBossConditionInput): Boss
+  deleteBoss(input: DeleteBossInput!, condition: ModelBossConditionInput): Boss
+  createQuestion(input: CreateQuestionInput!, condition: ModelQuestionConditionInput): Question
+  updateQuestion(input: UpdateQuestionInput!, condition: ModelQuestionConditionInput): Question
+  deleteQuestion(input: DeleteQuestionInput!, condition: ModelQuestionConditionInput): Question
+  createSession(input: CreateSessionInput!, condition: ModelSessionConditionInput): Session
+  updateSession(input: UpdateSessionInput!, condition: ModelSessionConditionInput): Session
+  deleteSession(input: DeleteSessionInput!, condition: ModelSessionConditionInput): Session
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelBossConnection {
+  items: [Boss]
+  nextToken: String
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+input ModelBossFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  slug: ModelStringInput
+  bossImgUrl: ModelStringInput
+  background: ModelStringInput
+  and: [ModelBossFilterInput]
+  or: [ModelBossFilterInput]
+  not: ModelBossFilterInput
+}
+
+type Query {
+  getBoss(id: ID!): Boss
+  listBosss(filter: ModelBossFilterInput, limit: Int, nextToken: String): ModelBossConnection
+  getQuestion(id: ID!): Question
+  listQuestions(filter: ModelQuestionFilterInput, limit: Int, nextToken: String): ModelQuestionConnection
+  getSession(id: ID!): Session
+  listSessions(filter: ModelSessionFilterInput, limit: Int, nextToken: String): ModelSessionConnection
+}
+
+input CreateBossInput {
+  id: ID
+  name: String!
+  slug: String!
+  bossImgUrl: AWSURL
+  background: String
+}
+
+input UpdateBossInput {
+  id: ID!
+  name: String
+  slug: String
+  bossImgUrl: AWSURL
+  background: String
+}
+
+input DeleteBossInput {
+  id: ID
+}
+
+input ModelBossConditionInput {
+  name: ModelStringInput
+  slug: ModelStringInput
+  bossImgUrl: ModelStringInput
+  background: ModelStringInput
+  and: [ModelBossConditionInput]
+  or: [ModelBossConditionInput]
+  not: ModelBossConditionInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+type Subscription {
+  onCreateBoss: Boss @aws_subscribe(mutations: ["createBoss"])
+  onUpdateBoss: Boss @aws_subscribe(mutations: ["updateBoss"])
+  onDeleteBoss: Boss @aws_subscribe(mutations: ["deleteBoss"])
+  onCreateQuestion: Question @aws_subscribe(mutations: ["createQuestion"])
+  onUpdateQuestion: Question @aws_subscribe(mutations: ["updateQuestion"])
+  onDeleteQuestion: Question @aws_subscribe(mutations: ["deleteQuestion"])
+  onCreateSession: Session @aws_subscribe(mutations: ["createSession"])
+  onUpdateSession: Session @aws_subscribe(mutations: ["updateSession"])
+  onDeleteSession: Session @aws_subscribe(mutations: ["deleteSession"])
+}
+
+input AnswerInput {
+  text: String!
+  correct: Boolean!
+}
+
+type ModelQuestionConnection {
+  items: [Question]
+  nextToken: String
+}
+
+input ModelQuestionFilterInput {
+  id: ModelIDInput
+  text: ModelStringInput
+  and: [ModelQuestionFilterInput]
+  or: [ModelQuestionFilterInput]
+  not: ModelQuestionFilterInput
+}
+
+input CreateQuestionInput {
+  id: ID
+  text: String!
+  answers: [AnswerInput!]!
+  questionBossId: ID!
+}
+
+input UpdateQuestionInput {
+  id: ID!
+  text: String
+  answers: [AnswerInput!]
+  questionBossId: ID
+}
+
+input DeleteQuestionInput {
+  id: ID
+}
+
+input ModelQuestionConditionInput {
+  text: ModelStringInput
+  and: [ModelQuestionConditionInput]
+  or: [ModelQuestionConditionInput]
+  not: ModelQuestionConditionInput
+}
+
+type ModelSessionConnection {
+  items: [Session]
+  nextToken: String
+}
+
+input ModelSessionFilterInput {
+  id: ModelIDInput
+  seenQuestions: ModelStringInput
+  inventory: ModelStringInput
+  and: [ModelSessionFilterInput]
+  or: [ModelSessionFilterInput]
+  not: ModelSessionFilterInput
+}
+
+input CreateSessionInput {
+  id: ID
+  seenQuestions: AWSJSON
+  inventory: AWSJSON
+}
+
+input UpdateSessionInput {
+  id: ID!
+  seenQuestions: AWSJSON
+  inventory: AWSJSON
+}
+
+input DeleteSessionInput {
+  id: ID
+}
+
+input ModelSessionConditionInput {
+  seenQuestions: ModelStringInput
+  inventory: ModelStringInput
+  and: [ModelSessionConditionInput]
+  or: [ModelSessionConditionInput]
+  not: ModelSessionConditionInput
+}

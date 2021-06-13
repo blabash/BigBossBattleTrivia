@@ -1,0 +1,77 @@
+type Boss @model {
+  id: ID!
+  name: String!
+  slug: String!
+  bossImgUrl: AWSURL
+  background: String
+  questions: [Question] @connection(name: "BossQuestions")
+}
+
+type Question @model {
+  id: ID!
+  text: String!
+  boss: Boss! @connection(name: "BossQuestions")
+  answers: [Answer!]!
+}
+
+type Answer {
+  text: String!
+  correct: Boolean!
+}
+
+type Session @model {
+  id: ID!
+  seenQuestions: AWSJSON
+  inventory: AWSJSON
+}
+
+input GetRandomQuestionsInput {
+  bossId: ID!
+  sessionId: ID!
+  numQuestionsForRound: Int!
+}
+
+type DdbError {
+  statusCode: Int
+  error: String
+}
+
+type DdbQuestion {
+  updatedAt: String
+  createdAt: String
+  answers: [Answer]
+  text: String
+  id: String
+  questionBossId: String
+}
+
+type NewQuestions {
+  newQuestions: [DdbQuestion]
+}
+
+union GetRandomQuestionsResult = DdbError | NewQuestions
+
+input GetRandomLootItemInput {
+  bossId: ID!
+  sessionId: ID!
+}
+
+type LootItem {
+  id: String
+  name: String
+  thumbnailUrl: String
+  tooltipUrl: String
+}
+
+type LootItemResult {
+  lootItem: LootItem
+}
+
+union GetRandomLootItemResult = DdbError | LootItemResult
+
+type Mutation {
+  getRandomQuestions(input: GetRandomQuestionsInput!): GetRandomQuestionsResult
+    @function(name: "getRandomQuestions-${env}")
+  getRandomLootItem(input: GetRandomLootItemInput!): GetRandomLootItemResult
+    @function(name: "getRandomLootItem-${env}")
+}
