@@ -1,12 +1,5 @@
 import Link from "next/link";
-import React, {
-  useEffect,
-  useRef,
-  useReducer,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import React, { useEffect, useRef, useReducer, useState } from "react";
 import {
   getBossData,
   getBossSlugs,
@@ -17,7 +10,6 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { CreateSessionMutation } from "../src/API";
-import { Inventory } from "./_app";
 
 type Questions = Array<{
   __typename: string;

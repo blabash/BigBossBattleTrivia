@@ -1,5 +1,5 @@
 import type { AppProps /*, AppContext */ } from "next/app";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { lootTable } from "../amplify/backend/function/getRandomLootItem/src";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { createSession, getRandomLootItem, getSession } from "../lib/bosses";
@@ -18,7 +18,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     if (!newLoot || newLoot.__typename === "DdbError") {
       console.warn("Something went wrong fetching new loot.");
     } else {
-      console.log("newLootRef updating...");
       setWinCounter((c) => ++c);
     }
   };
@@ -44,8 +43,6 @@ function MyApp({ Component, pageProps }: AppProps) {
           return;
         }
         const parsedInventory = JSON.parse(session.inventory) as Inventory;
-
-        console.log("updating session inventory...");
         session.inventory && setInventory(parsedInventory);
       }
     }

@@ -1,23 +1,23 @@
-import React, { useEffect } from 'react';
-import { ListBosssQuery, CreateSessionMutation } from '../src/API';
-import Image from 'next/image';
-import Head from 'next/head';
-import Link from 'next/link';
-import { getBossesData } from '../lib/bosses';
+import React from "react";
+import { ListBosssQuery, CreateSessionMutation } from "../src/API";
+import Image from "next/image";
+import Head from "next/head";
+import Link from "next/link";
+import { getBossesData } from "../lib/bosses";
 
 type Props = {
-  bosses: ListBosssQuery['listBosss']['items'];
-  sessionId: CreateSessionMutation['createSession']['id'];
+  bosses: ListBosssQuery["listBosss"]["items"];
+  sessionId: CreateSessionMutation["createSession"]["id"];
 };
 
-const ROUTE_BOSS_SLUG = '/[slug]';
+const ROUTE_BOSS_SLUG = "/[slug]";
 
 const StartScreen = ({ bosses, sessionId }: Props) => {
   return (
     <>
       <Head>
         <title>Big Boss Battle Trivia</title>
-        <link rel='icon' href='/onslaught_hexagon.png' />
+        <link rel="icon" href="/onslaught_hexagon.png" />
       </Head>
       <h2>BIG BOSS BATTLE TRIVIA</h2>
       <ul>
@@ -33,7 +33,7 @@ const StartScreen = ({ bosses, sessionId }: Props) => {
                   src={bossImgUrl}
                   height={250}
                   width={250}
-                  layout={'intrinsic'}
+                  layout={"intrinsic"}
                 />
               </a>
             </Link>
