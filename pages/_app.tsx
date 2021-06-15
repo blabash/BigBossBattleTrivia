@@ -1,16 +1,29 @@
 import type { AppProps /*, AppContext */ } from "next/app";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { lootTable } from "../amplify/backend/function/getRandomLootItem/src";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { createSession, getSession } from "../lib/bosses";
+import { createSession, getRandomLootItem, getSession } from "../lib/bosses";
 
-type Inventory = [string, number][];
+export type Inventory = { [id: string]: number };
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [sessionId, setSessionId] = useLocalStorage<string>("sessionId", null);
-  const [inventory, setInventory] = useState<Inventory>([]);
+  const [inventory, setInventory] = useState<Inventory>({});
+  const [winCounter, setWinCounter] = useState(0);
   console.log("local storage session id: ", sessionId);
-  console.log(`inventory: `, inventory);
+
+  const lootBoss = async (bossId: string, sessionId: string) => {
+    const newLoot = await getRandomLootItem(bossId, sessionId);
+    console.log(`newLoot: `, newLoot);
+    if (!newLoot || newLoot.__typename === "DdbError") {
+      console.warn("Something went wrong fetching new loot.");
+    } else {
+      console.log("newLootRef updating...");
+      setWinCounter((c) => ++c);
+    }
+  };
+
+  console.log(`winCounter`, winCounter);
 
   useEffect(() => {
     async function setupSession(sessionId: string | null) {
@@ -25,37 +38,47 @@ function MyApp({ Component, pageProps }: AppProps) {
       } else {
         const session = await getSession(sessionId);
         if (!session) {
-          console.warn("Could not fetch session! May see repeat questions.");
+          console.warn(
+            "Could not fetch session! This means no inventory and may see repeat questions."
+          );
           return;
         }
-        console.log(`fetched session: `, session);
-        const parsedInventory = JSON.parse(session.inventory);
-        session.inventory && setInventory(Object.entries(parsedInventory));
+        const parsedInventory = JSON.parse(session.inventory) as Inventory;
+
+        console.log("updating session inventory...");
+        session.inventory && setInventory(parsedInventory);
       }
     }
 
     setupSession(sessionId);
-  }, []);
+  }, [winCounter]);
 
   return (
     <>
-      <Component sessionId={sessionId} {...pageProps} />
+      <Component sessionId={sessionId} lootBoss={lootBoss} {...pageProps} />
       <details>
         <summary>Your Inventory</summary>
-        {inventory.length > 0 ? (
-          <ul style={{ display: "flex", gap: "2em", listStyle: "none" }}>
-            {inventory.map((item) => {
+        {Object.keys(inventory).length > 0 ? (
+          <ul
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "2em",
+              listStyle: "none",
+            }}
+          >
+            {Object.keys(inventory).map((id) => {
               return (
                 <li
-                  key={item[0]}
+                  key={id}
                   style={{ border: "1px solid black", borderRadius: "8px" }}
                 >
                   <img
                     style={{ float: "left" }}
-                    src={lootTable[item[0]].thumbnailUrl}
-                    alt={`image of ${lootTable[item[0]].name}`}
+                    src={lootTable[id].thumbnailUrl}
+                    alt={`image of ${lootTable[id].name}`}
                   />
-                  <p>{`x${item[1]} ${lootTable[item[0]].name}`}</p>
+                  <p>{`x${inventory[id]} ${lootTable[id].name}`}</p>
                 </li>
               );
             })}

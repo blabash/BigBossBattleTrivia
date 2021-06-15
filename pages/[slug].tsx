@@ -1,5 +1,12 @@
 import Link from "next/link";
-import React, { useEffect, useRef, useReducer, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useReducer,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import {
   getBossData,
   getBossSlugs,
@@ -10,6 +17,7 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { CreateSessionMutation } from "../src/API";
+import { Inventory } from "./_app";
 
 type Questions = Array<{
   __typename: string;
@@ -128,6 +136,7 @@ function reducer(state: Readonly<State>, action: ACTIONTYPE): Readonly<State> {
 
 interface Props extends InferGetStaticPropsType<typeof getStaticProps> {
   sessionId: CreateSessionMutation["createSession"]["id"];
+  lootBoss: (bossId: string, sessionId: string) => void;
 }
 
 const initialState: State = {
@@ -143,7 +152,7 @@ const initialState: State = {
   remainingBossHP: 3,
 };
 
-export default function Boss({ bossData, sessionId }: Props) {
+export default function Boss({ bossData, sessionId, lootBoss }: Props) {
   const [gameState, dispatch] = useReducer(reducer, initialState);
   const [error, setError] = useState<string | null>(null);
 
@@ -215,6 +224,9 @@ export default function Boss({ bossData, sessionId }: Props) {
         dispatch({ type: ActionType.NEXT_QUESTION });
         return;
       } else if (gameState.currQuestionIdx > 0) {
+        if (gameState.remainingBossHP <= 0) {
+          lootBoss(bossData.id, sessionId);
+        }
         dispatch({ type: ActionType.END_ROUND });
       }
     }, 2000);
