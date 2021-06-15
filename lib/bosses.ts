@@ -1,9 +1,19 @@
-import API, { graphqlOperation } from '@aws-amplify/api-graphql';
-import awsExports from '../src/aws-exports';
+import API, { graphqlOperation } from "@aws-amplify/api-graphql";
+import awsExports from "../src/aws-exports";
 API.configure(awsExports);
-import { ListBosssQuery, CreateSessionMutation } from '../src/API';
-import { listBosss } from '../src/graphql/queries';
-import { createSession, getRandomQuestions } from '../src/graphql/mutations';
+import {
+  ListBosssQuery,
+  CreateSessionMutation,
+  GetRandomLootItemMutation,
+  GetSessionQuery,
+} from "../src/API";
+import { listBosss } from "../src/graphql/queries";
+import {
+  createSession as createSessionMutation,
+  getRandomLootItem as getRandomLootItemMutation,
+} from "../src/graphql/mutations";
+
+import { getSession as getSessionsQuery } from "../src/graphql/queries";
 
 export async function getBossesData() {
   try {
@@ -60,15 +70,29 @@ export async function getBossData(slug: string | string[]) {
   }
 }
 
-export async function createSessionId() {
+export async function createSession() {
   try {
     const response = (await API.graphql(
-      graphqlOperation(createSession, { input: {} })
+      graphqlOperation(createSessionMutation, { input: {} })
     )) as {
       data: CreateSessionMutation;
       error: {}[];
     };
-    return response.data.createSession.id;
+    return response.data.createSession;
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
+export async function getSession(sessionId: string) {
+  try {
+    const response = (await API.graphql(
+      graphqlOperation(getSessionsQuery, { id: sessionId })
+    )) as {
+      data: GetSessionQuery;
+      error: {}[];
+    };
+    return response.data.getSession;
   } catch (error) {
     console.warn(error);
   }
@@ -99,12 +123,12 @@ type GetRandomQuestionsMutation = {
   getRandomQuestions:
     | (
         | {
-            __typename: 'DdbError';
+            __typename: "DdbError";
             statusCode: number | null;
             error: string | null;
           }
         | {
-            __typename: 'NewQuestions';
+            __typename: "NewQuestions";
             newQuestions: Array<{
               __typename: string;
               updatedAt: string | null;
@@ -155,9 +179,9 @@ const getQuestionAnswerQuery = `query GetQuestion($id: ID!) {
 `;
 type GetQuestionAnswerQuery = {
   getQuestion: {
-    __typename: 'Question';
+    __typename: "Question";
     answers: Array<{
-      __typename: 'Answer';
+      __typename: "Answer";
       correct: boolean;
     }>;
   } | null;
@@ -168,6 +192,19 @@ export async function getQuestionAnswer(id: string) {
       graphqlOperation(getQuestionAnswerQuery, { id })
     )) as { data: GetQuestionAnswerQuery; error: {}[] };
     return response.data.getQuestion.answers;
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
+export async function getRandomLootItem(bossId: string, sessionId: string) {
+  try {
+    const response = (await API.graphql(
+      graphqlOperation(getRandomLootItemMutation, {
+        input: { bossId, sessionId },
+      })
+    )) as { data: GetRandomLootItemMutation; error: {}[] };
+    return response.data.getRandomLootItem;
   } catch (error) {
     console.warn(error);
   }

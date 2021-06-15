@@ -1,15 +1,15 @@
-import Link from 'next/link';
-import React, { useEffect, useRef, useReducer, useState } from 'react';
+import Link from "next/link";
+import React, { useEffect, useRef, useReducer, useState } from "react";
 import {
   getBossData,
   getBossSlugs,
   getNewQuestions,
   getQuestionAnswer,
-} from '../lib/bosses';
-import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
-import Head from 'next/head';
-import Image from 'next/image';
-import { CreateSessionMutation } from '../src/API';
+} from "../lib/bosses";
+import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import Head from "next/head";
+import Image from "next/image";
+import { CreateSessionMutation } from "../src/API";
 
 type Questions = Array<{
   __typename: string;
@@ -38,16 +38,16 @@ type State = {
 };
 
 enum ActionType {
-  SET_CURRENT_QUESTIONS = 'set_current_questions',
-  UPDATE_ANSWER_HISTORY = 'update_answer_history',
-  SET_GIVEN_ANSWER_IDX = 'set_given_answer_idx',
-  START_ROUND = 'start_round',
-  END_ROUND = 'end_round',
-  DECREMENT_TIMER = 'decrement_timer',
-  NEXT_QUESTION = 'next_question',
-  RESET_ROUND = 'reset_round',
-  DAMAGE_BOSS = 'damage_boss',
-  DAMAGE_PLAYER = 'damage_player',
+  SET_CURRENT_QUESTIONS = "set_current_questions",
+  UPDATE_ANSWER_HISTORY = "update_answer_history",
+  SET_GIVEN_ANSWER_IDX = "set_given_answer_idx",
+  START_ROUND = "start_round",
+  END_ROUND = "end_round",
+  DECREMENT_TIMER = "decrement_timer",
+  NEXT_QUESTION = "next_question",
+  RESET_ROUND = "reset_round",
+  DAMAGE_BOSS = "damage_boss",
+  DAMAGE_PLAYER = "damage_player",
 }
 
 type ACTIONTYPE =
@@ -121,13 +121,13 @@ function reducer(state: Readonly<State>, action: ACTIONTYPE): Readonly<State> {
         remainingPlayerHP: state.remainingPlayerHP - 1,
       };
     default:
-      console.warn('No matching type for that action.');
+      console.warn("No matching type for that action.");
       return state;
   }
 }
 
 interface Props extends InferGetStaticPropsType<typeof getStaticProps> {
-  sessionId: CreateSessionMutation['createSession']['id'];
+  sessionId: CreateSessionMutation["createSession"]["id"];
 }
 
 const initialState: State = {
@@ -144,7 +144,7 @@ const initialState: State = {
 };
 
 export default function Boss({ bossData, sessionId }: Props) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [gameState, dispatch] = useReducer(reducer, initialState);
   const [error, setError] = useState<string | null>(null);
 
   const timeRemainingId = useRef<number | null>(null);
@@ -155,8 +155,8 @@ export default function Boss({ bossData, sessionId }: Props) {
     const setQuestions = async (): Promise<void> => {
       const res = await getNewQuestions(sessionId, bossData.id, 8);
       console.log(`questions`, res);
-      if (!res || res.__typename === 'DdbError') {
-        setError('Could not fetch questions');
+      if (!res || res.__typename === "DdbError") {
+        setError("Could not fetch questions");
       } else {
         dispatch({
           type: ActionType.SET_CURRENT_QUESTIONS,
@@ -165,107 +165,109 @@ export default function Boss({ bossData, sessionId }: Props) {
       }
     };
 
-    if (state.roundStarted === false) {
+    if (gameState.roundStarted === false) {
       setQuestions();
     }
-  }, [state.roundStarted]);
+  }, [gameState.roundStarted]);
 
   useEffect(() => {
-    if (state.roundStarted === true) {
+    if (gameState.roundStarted === true) {
       timeRemainingId.current = window.setInterval(() => {
         dispatch({ type: ActionType.DECREMENT_TIMER });
       }, 1000);
     }
     return clearTimeRemaining;
-  }, [state.roundStarted, state.currQuestionIdx]);
+  }, [gameState.roundStarted, gameState.currQuestionIdx]);
 
   useEffect(() => {
     const getCorrectAnswer = async (): Promise<void> => {
-      const currQuestionId = state.currentQuestions[state.currQuestionIdx].id;
+      const currQuestionId =
+        gameState.currentQuestions[gameState.currQuestionIdx].id;
       const answers = await getQuestionAnswer(currQuestionId);
       console.log(`answers`, answers);
       const correctIdx = answers.findIndex((ans) => ans.correct);
       if (!answers) {
-        setError('Could not fetch answer');
+        setError("Could not fetch answer");
       } else {
-        state.givenAnswerIdx === correctIdx
+        gameState.givenAnswerIdx === correctIdx
           ? dispatch({ type: ActionType.DAMAGE_BOSS })
           : dispatch({ type: ActionType.DAMAGE_PLAYER });
       }
       dispatch({
         type: ActionType.UPDATE_ANSWER_HISTORY,
-        payload: { givenIdx: state.givenAnswerIdx, correctIdx },
+        payload: { givenIdx: gameState.givenAnswerIdx, correctIdx },
       });
     };
 
-    if (state.givenAnswerIdx !== null || state.timeRemaining <= 0) {
+    if (gameState.givenAnswerIdx !== null || gameState.timeRemaining <= 0) {
       clearTimeRemaining();
       getCorrectAnswer();
     }
-  }, [state.givenAnswerIdx, state.timeRemaining]);
+  }, [gameState.givenAnswerIdx, gameState.timeRemaining]);
 
   useEffect(() => {
     const id = window.setTimeout(() => {
       if (
-        state.remainingBossHP >= 1 &&
-        state.remainingPlayerHP >= 1 &&
-        state.roundStarted
+        gameState.remainingBossHP >= 1 &&
+        gameState.remainingPlayerHP >= 1 &&
+        gameState.roundStarted
       ) {
         dispatch({ type: ActionType.NEXT_QUESTION });
         return;
-      } else if (state.currQuestionIdx > 0) {
+      } else if (gameState.currQuestionIdx > 0) {
         dispatch({ type: ActionType.END_ROUND });
       }
     }, 2000);
 
     return () => window.clearTimeout(id);
-  }, [state.remainingPlayerHP, state.remainingBossHP]);
+  }, [gameState.remainingPlayerHP, gameState.remainingBossHP]);
 
   return (
     <div>
       <Head>
         <title>Big Boss Battle Trivia: {bossData.name}</title>
-        <link rel='icon' href='/onslaught_hexagon.png' />
+        <link rel="icon" href="/onslaught_hexagon.png" />
       </Head>
-      <Link href='/'>
+      <Link href="/">
         <a>Home</a>
-      </Link>{' '}
+      </Link>{" "}
       <h1>{bossData.name}</h1>
       <Image
         src={bossData.bossImgUrl}
         height={300}
         width={300}
-        layout={'intrinsic'}
+        layout={"intrinsic"}
       />
       <br />
-      {!state.roundStarted &&
-        state.remainingBossHP === state.bossHP &&
-        state.remainingPlayerHP === state.playerHP && (
+      {!gameState.roundStarted &&
+        gameState.remainingBossHP === gameState.bossHP &&
+        gameState.remainingPlayerHP === gameState.playerHP && (
           <button onClick={() => dispatch({ type: ActionType.START_ROUND })}>
             Begin
           </button>
         )}
-      {!state.roundStarted &&
-        (state.remainingPlayerHP === 0 || state.remainingBossHP === 0) && (
+      {!gameState.roundStarted &&
+        (gameState.remainingPlayerHP === 0 ||
+          gameState.remainingBossHP === 0) && (
           <button onClick={() => dispatch({ type: ActionType.RESET_ROUND })}>
             Restart
           </button>
         )}
       <h3>
-        boss HP: {state.remainingBossHP}/{state.bossHP}
+        boss HP: {gameState.remainingBossHP}/{gameState.bossHP}
       </h3>
       <h3>
-        your HP: {state.remainingPlayerHP}/{state.playerHP}
+        your HP: {gameState.remainingPlayerHP}/{gameState.playerHP}
       </h3>
-      {state.roundStarted && <h2>{state.timeRemaining}</h2>}
-      {state.roundStarted && !state.currentQuestions && (
+      {gameState.roundStarted && <h2>{gameState.timeRemaining}</h2>}
+      {gameState.roundStarted && !gameState.currentQuestions && (
         <p>Patience mortal, loading questions...</p>
       )}
-      {state.roundStarted && state.currentQuestions && (
+      {gameState.roundStarted && gameState.currentQuestions && (
         <div>
-          <p>{state.currentQuestions[state.currQuestionIdx].text}</p>
+          <p>{gameState.currentQuestions[gameState.currQuestionIdx].text}</p>
           <ul>
-            {state.currentQuestions[state.currQuestionIdx].answers.map(
+            {gameState.currentQuestions[gameState.currQuestionIdx].answers.map(
               ({ text }, idx: number) => (
                 <li key={text}>
                   <button
@@ -276,7 +278,8 @@ export default function Boss({ bossData, sessionId }: Props) {
                       });
                     }}
                     disabled={
-                      state.givenAnswerIdx !== null || state.timeRemaining <= 0
+                      gameState.givenAnswerIdx !== null ||
+                      gameState.timeRemaining <= 0
                     }
                   >
                     {text}
@@ -285,22 +288,22 @@ export default function Boss({ bossData, sessionId }: Props) {
               )
             )}
           </ul>
-          {state.givenAnswerIdx !== null && (
+          {gameState.givenAnswerIdx !== null && (
             <p>
-              you said:{' '}
+              you said:{" "}
               {
-                state.currentQuestions[state.currQuestionIdx].answers[
-                  state.givenAnswerIdx
+                gameState.currentQuestions[gameState.currQuestionIdx].answers[
+                  gameState.givenAnswerIdx
                 ].text
               }
             </p>
           )}
-          {state.answerHistory[state.currQuestionIdx] && (
+          {gameState.answerHistory[gameState.currQuestionIdx] && (
             <p>
-              correct answer:{' '}
+              correct answer:{" "}
               {
-                state.currentQuestions[state.currQuestionIdx].answers[
-                  state.answerHistory[state.currQuestionIdx].correctIdx
+                gameState.currentQuestions[gameState.currQuestionIdx].answers[
+                  gameState.answerHistory[gameState.currQuestionIdx].correctIdx
                 ].text
               }
             </p>
