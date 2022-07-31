@@ -20,6 +20,7 @@ const StartScreen = ({ bosses, sessionId }: Props) => {
         <link rel="icon" href="/onslaught_hexagon.png" />
       </Head>
       <h2>BIG BOSS BATTLE TRIVIA</h2>
+      <h3>Slay bosses, get loot</h3>
       <ul>
         {bosses.map(({ id, name, bossImgUrl, slug }) => (
           <li key={id}>
